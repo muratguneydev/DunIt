@@ -18,7 +18,7 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 |---|-----------|-----------|--------------|
 | 1 | **Child model** | `ShouldHaveDefaultAvatar_WhenAvatarNotProvided` | `Child` record with Id, Name, Avatar (default 🧒) |
 | 2 | **ChoreCompletion model** | no test — no logic | `ChoreCompletion` record: Id, ChoreId, ChildId, CompletedAt (DateTimeOffset) |
-| 3 | **Chore scheduling** | `ShouldBeScheduledForToday_WhenTodayIsInDaysOfWeek` / `ShouldNotBeScheduled_WhenTodayIsNotInDaysOfWeek` | `Chore.IsScheduledFor(DateOnly)` method |
+| 3 | **Chore scheduling** | `ShouldBeScheduledForToday_WhenTodayIsInDaysOfWeek` / `ShouldNotBeScheduled_WhenTodayIsNotInDaysOfWeek` | `Chore.IsScheduledFor(DateTimeOffset)` method |
 
 ## Phase 2: In-Memory Chore Service
 | # | Iteration | Red (test) | Green (code) |
