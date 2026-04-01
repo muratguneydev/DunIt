@@ -1,7 +1,7 @@
+namespace DunIt.UnitTests;
+
 using NUnit.Framework;
 using Shouldly;
-
-namespace DunIt.UnitTests;
 
 public class SmokeTests
 {

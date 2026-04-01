@@ -1,9 +1,9 @@
+namespace DunIt.UnitTests;
+
 using AutoFixture.NUnit3;
 using DunIt.Core.Models;
 using NUnit.Framework;
 using Shouldly;
-
-namespace DunIt.UnitTests;
 
 public class ChildTests
 {
