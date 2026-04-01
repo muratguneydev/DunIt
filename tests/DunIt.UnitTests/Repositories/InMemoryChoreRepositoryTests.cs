@@ -4,22 +4,35 @@ using AutoFixture.NUnit3;
 using DunIt.Core.Models;
 using DunIt.Core.Repositories;
 using DunIt.Core.Schedules;
+using DunIt.Testing;
 using NUnit.Framework;
 using Shouldly;
 
 public class InMemoryChoreRepositoryTests
 {
-    [Test, AutoData]
-    public async Task ShouldAddChore_WhenValidChoreProvided(string id, string title, string assignedTo)
+    [Test, DomainAutoData]
+    public async Task ShouldAddChore_WhenValidChoreProvided(Chore chore,
+        InMemoryChoreRepository sut)
     {
-        // Arrange
-        var chore = new Chore(id, title, assignedTo, new DailySchedule());
-        var repository = new InMemoryChoreRepository();
-
         // Act
-        var result = await repository.AddChore(chore);
-
+        var result = await sut.AddChore(chore);
         // Assert
         result.ShouldBe(chore);
+    }
+
+    [Test, DomainAutoData]
+    public async Task ShouldReturnChores_WhenChildHasAssignedChores(Chore childChore,
+        Chore otherChore,
+        InMemoryChoreRepository sut)
+    {
+        // Arrange
+        await sut.AddChore(childChore);
+        await sut.AddChore(otherChore);
+
+        // Act
+        var result = await sut.GetChoresForChild(childChore.AssignedTo);
+
+        // Assert
+        result.ShouldBe([childChore]);
     }
 }
