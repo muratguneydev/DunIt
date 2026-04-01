@@ -1,0 +1,20 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.nupkg
+
+# Rider / JetBrains
+.idea/
+
+# Docker
+.dockerignore
+
+# Claude Code local settings
+.claude/
+
+# Environment
+.env
+*.env.local

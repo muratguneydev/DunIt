@@ -1,0 +1,20 @@
+{
+  "name": "DunIt",
+  "image": "mcr.microsoft.com/dotnet/sdk:10.0",
+  "workspaceFolder": "/workspaces/DunIt",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/DunIt,type=bind",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime"
+      ],
+      "settings": {
+        "dotnet.defaultSolution": "DunIt.sln",
+        "testing.automaticallyOpenTestResults": "openOnTestStart"
+      }
+    }
+  },
+  "postCreateCommand": "dotnet restore"
+}

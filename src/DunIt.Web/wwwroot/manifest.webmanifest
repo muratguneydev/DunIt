@@ -1,0 +1,9 @@
+{
+  "name": "DunIt",
+  "short_name": "DunIt",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4a90d9",
+  "prefer_related_applications": false
+}
