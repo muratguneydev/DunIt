@@ -8,14 +8,12 @@ using Shouldly;
 public class ChildTests
 {
     [Test, AutoData]
-    public void ShouldCreateChild_WhenNameProvided(string id, string name)
+    public void ShouldHaveDefaultAvatar_WhenAvatarNotProvided(string id, string name)
     {
         // Act
         var child = new Child(id, name);
 
         // Assert
-        child.Id.ShouldBe(id);
-        child.Name.ShouldBe(name);
         child.Avatar.ShouldBe("🧒");
     }
 }

@@ -16,8 +16,8 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 ## Phase 1: Domain Models
 | # | Iteration | Red (test) | Green (code) |
 |---|-----------|-----------|--------------|
-| 1 | **Child model** | `ShouldCreateChild_WhenNameProvided` | `Child` record with Id, Name, Avatar |
-| 2 | **ChoreCompletion model** | `ShouldCreateCompletion_WhenChoreAndDateProvided` | `ChoreCompletion` record |
+| 1 | **Child model** | `ShouldHaveDefaultAvatar_WhenAvatarNotProvided` | `Child` record with Id, Name, Avatar (default 🧒) |
+| 2 | **ChoreCompletion model** | no test — no logic | `ChoreCompletion` record: Id, ChoreId, ChildId, CompletedAt (DateTimeOffset) |
 | 3 | **Chore scheduling** | `ShouldBeScheduledForToday_WhenTodayIsInDaysOfWeek` / `ShouldNotBeScheduled_WhenTodayIsNotInDaysOfWeek` | `Chore.IsScheduledFor(DateOnly)` method |
 
 ## Phase 2: In-Memory Chore Service
