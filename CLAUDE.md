@@ -44,9 +44,9 @@ DunIt is a kids' chore tracker — a Blazor WebAssembly PWA backed by Firebase (
 - **Child** — a user profile (name, avatar)
 - **Parent** — admin user who manages chores and children
 
-### Firebase interop
+### Repository pattern
 
-Blazor calls Firebase via JS interop (`wwwroot/js/firebase-interop.js`). C# service interfaces (`IChoreService`, `IAuthService`) wrap the interop calls.
+Data access is behind repository interfaces (`IChoreRepository`, `IChildRepository`). `InMemory*` implementations are used in development and tests. `Firebase*` implementations will be added in Phase 6.
 
 ### Test conventions
 
