@@ -13,7 +13,9 @@
     <PackageReference Include="NUnit" Version="4.*" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.*" />
     <PackageReference Include="AutoFixture" Version="4.*" />
-    <PackageReference Include="AutoFixture.NUnit3" Version="4.*" />
+    <PackageReference Include="AutoFixture.AutoMoq" Version="4.*" />
+    <PackageReference Include="AutoFixture.NUnit4" Version="4.*" />
+    <PackageReference Include="Moq" Version="4.*" />
     <PackageReference Include="Shouldly" Version="4.*" />
   </ItemGroup>
 

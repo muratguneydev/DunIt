@@ -1,6 +1,6 @@
 namespace DunIt.UnitTests.Schedules;
 
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using DunIt.Core.Schedules;
 using NUnit.Framework;
 using Shouldly;

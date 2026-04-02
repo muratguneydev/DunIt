@@ -1,6 +1,6 @@
 namespace DunIt.UnitTests;
 
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using DunIt.Core.Models;
 using NUnit.Framework;
 using Shouldly;

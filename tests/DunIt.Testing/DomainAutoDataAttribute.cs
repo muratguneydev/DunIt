@@ -1,6 +1,6 @@
 namespace DunIt.Testing;
 
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 
 public class DomainAutoDataAttribute : AutoDataAttribute
 {

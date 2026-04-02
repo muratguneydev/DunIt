@@ -1,6 +1,55 @@
 @page "/"
+@inject DailyChoreViewModel ViewModel
 
 <PageTitle>DunIt</PageTitle>
 
-<h1>DunIt</h1>
-<p>Chore tracker coming soon.</p>
+<div class="app">
+    @if (!ViewModel.Children.Any())
+    {
+        <p class="empty-state">No children added yet.</p>
+    }
+    else
+    {
+        <div class="child-selector">
+            @foreach (var child in ViewModel.Children)
+            {
+                <button class="child-btn @(child == ViewModel.SelectedChild ? "active" : "")"
+                        @onclick="() => ViewModel.SelectChild(child)">
+                    <span class="avatar">@child.Avatar</span>
+                    <span class="name">@child.Name</span>
+                </button>
+            }
+        </div>
+
+        <div class="progress">
+            @ViewModel.CompletedCount / @ViewModel.TotalCount done
+        </div>
+
+        <ul class="chore-list">
+            @foreach (var chore in ViewModel.UncompletedChores)
+            {
+                <li class="chore-item" @onclick="() => ViewModel.Complete(chore)">
+                    <span class="chore-check">⬜</span>
+                    <span class="chore-title">@chore.Title</span>
+                </li>
+            }
+            @foreach (var completed in ViewModel.CompletedChores)
+            {
+                <li class="chore-item done" @onclick="() => ViewModel.Undo(completed)">
+                    <span class="chore-check">✅</span>
+                    <span class="chore-title">@completed.Chore.Title</span>
+                </li>
+            }
+        </ul>
+
+        @if (ViewModel.TotalCount == 0)
+        {
+            <p class="empty-state">No chores today!</p>
+        }
+    }
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync() =>
+        await ViewModel.Initialize();
+}

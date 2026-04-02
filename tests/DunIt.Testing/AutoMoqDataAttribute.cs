@@ -2,7 +2,7 @@ namespace DunIt.Testing;
 
 using AutoFixture;
 using AutoFixture.AutoMoq;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 
 public class AutoMoqDataAttribute : AutoDataAttribute
 {
