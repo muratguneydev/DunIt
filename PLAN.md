@@ -60,9 +60,17 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 | 22 | ⬜ | **Firebase Auth** | Simple login per family member |
 | 23 | ⬜ | **Real-time sync** | Firestore `onSnapshot` listeners for live updates |
 
-## Phase 7: PWA & Polish
+## Phase 7: End-to-End Tests (Playwright)
 | # | Status | Iteration | Description |
 |---|--------|-----------|-------------|
-| 24 | ⬜ | **Offline support** | Service worker caching for offline use |
-| 25 | ⬜ | **Push reminders** | Firebase Cloud Messaging for daily nudges |
-| 26 | ⬜ | **Deploy to Firebase Hosting** | `firebase deploy` |
+| 27 | ⬜ | **Playwright setup** | `DunIt.IntegrationTests` project + Playwright Docker image in Compose |
+| 28 | ⬜ | **Daily chores E2E** | Navigate to page, verify chores listed per child |
+| 29 | ⬜ | **Complete/undo E2E** | Tap chore → moves to completed; tap again → moves back |
+| 30 | ⬜ | **Child selector E2E** | Switch children, verify correct chores shown |
+
+## Phase 8: PWA & Polish
+| # | Status | Iteration | Description |
+|---|--------|-----------|-------------|
+| 31 | ⬜ | **Offline support** | Service worker caching for offline use |
+| 32 | ⬜ | **Push reminders** | Firebase Cloud Messaging for daily nudges |
+| 33 | ⬜ | **Deploy to Firebase Hosting** | `firebase deploy` |
