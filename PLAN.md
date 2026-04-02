@@ -33,15 +33,15 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 | # | Status | Iteration | Red (test) | Green (code) |
 |---|--------|-----------|-----------|--------------|
 | 9 | ✅ | **Add child** | `ShouldAddChild_WhenValidChildProvided` | `InMemoryChildRepository.AddChild` |
-| 10 | ⬜ | **List children** | `ShouldReturnAllChildren_WhenChildrenExist` | `GetChildren` |
-| 11 | ⬜ | **Delete child** | `ShouldRemoveChild_WhenDeleted` | `DeleteChild` |
+| 10 | ✅ | **List children** | `ShouldReturnAllChildren_WhenChildrenExist` | `GetChildren` |
+| 11 | ✅ | **Delete child** | `ShouldRemoveChild_WhenDeleted` | `DeleteChild` |
 
 ## Phase 4: Daily Chore View Logic
 | # | Status | Iteration | Red (test) | Green (code) |
 |---|--------|-----------|-----------|--------------|
-| 12 | ⬜ | **Today's chores** | `ShouldReturnOnlyTodaysChores_WhenChoresHaveDifferentSchedules` | `DailyChoreViewModel` combining chores + completions |
-| 13 | ⬜ | **Completion status** | `ShouldShowCompleted_WhenChoreHasCompletionForToday` | ViewModel marks done/not-done |
-| 14 | ⬜ | **Progress count** | `ShouldCalculateProgress_WhenSomeChoresCompleted` | `3/5 done` style progress |
+| 12 | ✅ | **Today's chores** | `ShouldReturnOnlyTodaysChores_WhenChoresHaveDifferentSchedules` | `DailyChoreViewModel` combining chores + completions |
+| 13 | ✅ | **Completion status** | `ShouldShowCompleted_WhenChoreHasCompletionForToday` | ViewModel marks done/not-done |
+| 14 | ✅ | **Progress count** | `ShouldCalculateProgress_WhenSomeChoresCompleted` | `3/5 done` style progress |
 
 ## Phase 5: Blazor UI (light testing, mostly wiring)
 | # | Status | Iteration | Description |
