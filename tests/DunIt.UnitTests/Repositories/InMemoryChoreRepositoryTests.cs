@@ -35,4 +35,19 @@ public class InMemoryChoreRepositoryTests
         // Assert
         result.ShouldBe([childChore]);
     }
+
+    [Test, DomainAutoData]
+    public async Task ShouldRecordCompletion_WhenChoreCompleted(Chore chore, InMemoryChoreRepository sut)
+    {
+        // Arrange
+        await sut.AddChore(chore);
+        var completedAt = DateTimeOffset.UtcNow;
+
+        // Act
+        var completion = await sut.CompleteChore(chore.Id, chore.AssignedTo, completedAt);
+        var completions = await sut.GetCompletionsFor(chore.AssignedTo, completedAt);
+
+        // Assert
+        completions.ShouldBe([completion]);
+    }
 }

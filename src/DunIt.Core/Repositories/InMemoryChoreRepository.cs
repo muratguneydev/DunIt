@@ -22,10 +22,11 @@ public class InMemoryChoreRepository : IChoreRepository
     public Task<IReadOnlyList<Chore>> GetChoresForChild(string childId) =>
         Task.FromResult<IReadOnlyList<Chore>>(_chores.Where(c => c.AssignedTo == childId).ToList());
 
-    public Task CompleteChore(string choreId, string childId, DateTimeOffset completedAt)
+    public Task<ChoreCompletion> CompleteChore(string choreId, string childId, DateTimeOffset completedAt)
     {
-        _completions.Add(new ChoreCompletion(Guid.NewGuid().ToString(), choreId, childId, completedAt));
-        return Task.CompletedTask;
+        var completion = new ChoreCompletion(Guid.NewGuid().ToString(), choreId, childId, completedAt);
+        _completions.Add(completion);
+        return Task.FromResult(completion);
     }
 
     public Task UndoChore(string completionId)
