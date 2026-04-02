@@ -1,16 +1,14 @@
 namespace DunIt.UnitTests.Repositories;
 
-using AutoFixture.NUnit3;
 using DunIt.Core.Models;
 using DunIt.Core.Repositories;
-using DunIt.Core.Schedules;
 using DunIt.Testing;
 using NUnit.Framework;
 using Shouldly;
 
 public class InMemoryChoreRepositoryTests
 {
-    [Test, DomainAutoData]
+    [Test, AutoMoqData]
     public async Task ShouldAddChore_WhenValidChoreProvided(Chore chore,
         InMemoryChoreRepository sut)
     {
@@ -20,7 +18,7 @@ public class InMemoryChoreRepositoryTests
         result.ShouldBe(chore);
     }
 
-    [Test, DomainAutoData]
+    [Test, AutoMoqData]
     public async Task ShouldReturnChores_WhenChildHasAssignedChores(Chore childChore,
         Chore otherChore,
         InMemoryChoreRepository sut)
@@ -36,7 +34,7 @@ public class InMemoryChoreRepositoryTests
         result.ShouldBe([childChore]);
     }
 
-    [Test, DomainAutoData]
+    [Test, AutoMoqData]
     public async Task ShouldRecordCompletion_WhenChoreCompleted(Chore chore, InMemoryChoreRepository sut)
     {
         // Arrange
@@ -51,7 +49,7 @@ public class InMemoryChoreRepositoryTests
         completions.ShouldBe([completion]);
     }
 
-    [Test, DomainAutoData]
+    [Test, AutoMoqData]
     public async Task ShouldRemoveCompletion_WhenUndone(Chore chore, InMemoryChoreRepository sut)
     {
         // Arrange
@@ -67,7 +65,7 @@ public class InMemoryChoreRepositoryTests
         completions.ShouldBeEmpty();
     }
 
-    [Test, DomainAutoData]
+    [Test, AutoMoqData]
     public async Task ShouldRemoveChore_WhenDeleted(Chore chore, InMemoryChoreRepository sut)
     {
         // Arrange
