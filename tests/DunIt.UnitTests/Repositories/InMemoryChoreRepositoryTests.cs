@@ -50,4 +50,20 @@ public class InMemoryChoreRepositoryTests
         // Assert
         completions.ShouldBe([completion]);
     }
+
+    [Test, DomainAutoData]
+    public async Task ShouldRemoveCompletion_WhenUndone(Chore chore, InMemoryChoreRepository sut)
+    {
+        // Arrange
+        await sut.AddChore(chore);
+        var completedAt = DateTimeOffset.UtcNow;
+        var completion = await sut.CompleteChore(chore.Id, chore.AssignedTo, completedAt);
+
+        // Act
+        await sut.UndoChore(completion.Id);
+        var completions = await sut.GetCompletionsFor(chore.AssignedTo, completedAt);
+
+        // Assert
+        completions.ShouldBeEmpty();
+    }
 }
