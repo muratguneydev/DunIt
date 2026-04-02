@@ -1,5 +1,4 @@
-namespace DunIt.Web;
-
+using DunIt.Web;
 using DunIt.Core.Models;
 using DunIt.Core.Repositories;
 using DunIt.Core.Schedules;

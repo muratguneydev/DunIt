@@ -1,12 +1,14 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
-COPY DunIt.sln ./
+COPY src/DunIt.Core/DunIt.Core.csproj src/DunIt.Core/
 COPY src/DunIt.Web/DunIt.Web.csproj src/DunIt.Web/
-COPY tests/DunIt.Testing/DunIt.Testing.csproj tests/DunIt.Testing/
-COPY tests/DunIt.UnitTests/DunIt.UnitTests.csproj tests/DunIt.UnitTests/
-RUN dotnet restore
+RUN dotnet restore src/DunIt.Web/DunIt.Web.csproj
 
-COPY . .
-EXPOSE 5000
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/DunIt.Web/DunIt.Web.csproj", "--urls", "http://0.0.0.0:5000"]
+COPY src/DunIt.Core/ src/DunIt.Core/
+COPY src/DunIt.Web/ src/DunIt.Web/
+RUN dotnet publish src/DunIt.Web/DunIt.Web.csproj -c Release -o /publish
+
+FROM nginx:alpine
+COPY --from=build /publish/wwwroot /usr/share/nginx/html
+EXPOSE 80
