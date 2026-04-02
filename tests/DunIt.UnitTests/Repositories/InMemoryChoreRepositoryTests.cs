@@ -66,4 +66,18 @@ public class InMemoryChoreRepositoryTests
         // Assert
         completions.ShouldBeEmpty();
     }
+
+    [Test, DomainAutoData]
+    public async Task ShouldRemoveChore_WhenDeleted(Chore chore, InMemoryChoreRepository sut)
+    {
+        // Arrange
+        await sut.AddChore(chore);
+
+        // Act
+        await sut.DeleteChore(chore.Id);
+        var chores = await sut.GetChoresForChild(chore.AssignedTo);
+
+        // Assert
+        chores.ShouldBeEmpty();
+    }
 }
