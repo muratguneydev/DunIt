@@ -31,4 +31,18 @@ public class InMemoryChildRepositoryTests
         // Assert
         result.ShouldBe([child1, child2]);
     }
+
+    [Test, AutoMoqData]
+    public async Task ShouldRemoveChild_WhenDeleted(Child child, InMemoryChildRepository sut)
+    {
+        // Arrange
+        await sut.AddChild(child);
+
+        // Act
+        await sut.DeleteChild(child.Id);
+        var result = await sut.GetChildren();
+
+        // Assert
+        result.ShouldBeEmpty();
+    }
 }
