@@ -63,10 +63,10 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 ## Phase 7: End-to-End Tests (Playwright)
 | # | Status | Iteration | Description |
 |---|--------|-----------|-------------|
-| 27 | ⬜ | **Playwright setup** | `DunIt.IntegrationTests` project + Playwright Docker image in Compose |
-| 28 | ⬜ | **Daily chores E2E** | Navigate to page, verify chores listed per child |
-| 29 | ⬜ | **Complete/undo E2E** | Tap chore → moves to completed; tap again → moves back |
-| 30 | ⬜ | **Child selector E2E** | Switch children, verify correct chores shown |
+| 27 | ✅ | **Playwright setup** | `DunIt.IntegrationTests` project + Playwright Docker image in Compose |
+| 28 | ✅ | **Daily chores E2E** | Navigate to page, verify chores listed per child |
+| 29 | ✅ | **Complete/undo E2E** | Tap chore → moves to completed; tap again → moves back |
+| 30 | ✅ | **Child selector E2E** | Switch children, verify correct chores shown |
 
 ## Phase 8: PWA & Polish
 | # | Status | Iteration | Description |
