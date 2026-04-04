@@ -15,15 +15,15 @@ public class DailyChoreViewModelTests
     [Test, AutoMoqData]
     public async Task ShouldLoadChildren_WhenInitialized(
         List<Child> children,
-        [Frozen] Mock<IChildRepository> childRepo,
-        [Frozen] Mock<IChoreRepository> choreRepo,
+        [Frozen] Mock<IChoreRepository> choreRepoDummy,
+        [Frozen] Mock<IChildRepository> childRepoStub,
         DailyChoreViewModel sut)
     {
         // Arrange
         var approxNow = DateTimeOffset.Now;
-        childRepo.Setup(r => r.GetChildren()).ReturnsAsync(children);
-        choreRepo.Setup(r => r.GetChoresForChild(children[0].Id)).ReturnsAsync([]);
-        choreRepo.Setup(r => r.GetCompletionsFor(children[0].Id, WithinSeconds(approxNow, 5))).ReturnsAsync([]);
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync(children);
+        choreRepoDummy.Setup(r => r.GetChoresForChild(children[0].Id)).ReturnsAsync([]);
+        choreRepoDummy.Setup(r => r.GetCompletionsFor(children[0].Id, WithinSeconds(approxNow, 5))).ReturnsAsync([]);
 
         // Act
         await sut.Initialize();
@@ -36,15 +36,15 @@ public class DailyChoreViewModelTests
     [Test, AutoMoqData]
     public async Task ShouldReturnOnlyTodaysChores_WhenChoresLoaded(
         Child child, List<Chore> chores,
-        [Frozen] Mock<IChildRepository> childRepo,
-        [Frozen] Mock<IChoreRepository> choreRepo,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
         DailyChoreViewModel sut)
     {
         // Arrange
         var approxNow = DateTimeOffset.Now;
-        childRepo.Setup(r => r.GetChildren()).ReturnsAsync([child]);
-        choreRepo.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync(chores);
-        choreRepo.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(approxNow, 5))).ReturnsAsync([]);
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync(chores);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(approxNow, 5))).ReturnsAsync([]);
 
         // Act
         await sut.Initialize();
@@ -57,16 +57,16 @@ public class DailyChoreViewModelTests
     [Test, AutoMoqData]
     public async Task ShouldShowCompleted_WhenChoreHasCompletionForToday(
         Child child, Chore chore1, Chore chore2, ChoreCompletion completion,
-        [Frozen] Mock<IChildRepository> childRepo,
-        [Frozen] Mock<IChoreRepository> choreRepo,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
         DailyChoreViewModel sut)
     {
         // Arrange
         var approxNow = DateTimeOffset.Now;
         var matchingCompletion = completion with { ChoreId = chore1.Id };
-        childRepo.Setup(r => r.GetChildren()).ReturnsAsync([child]);
-        choreRepo.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore1, chore2]);
-        choreRepo.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(approxNow, 5))).ReturnsAsync([matchingCompletion]);
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore1, chore2]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(approxNow, 5))).ReturnsAsync([matchingCompletion]);
 
         // Act
         await sut.Initialize();
@@ -79,16 +79,16 @@ public class DailyChoreViewModelTests
     [Test, AutoMoqData]
     public async Task ShouldCalculateProgress_WhenSomeChoresCompleted(
         Child child, Chore chore1, Chore chore2, Chore chore3, ChoreCompletion completion,
-        [Frozen] Mock<IChildRepository> childRepo,
-        [Frozen] Mock<IChoreRepository> choreRepo,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
         DailyChoreViewModel sut)
     {
         // Arrange
         var approxNow = DateTimeOffset.Now;
         var matchingCompletion = completion with { ChoreId = chore1.Id };
-        childRepo.Setup(r => r.GetChildren()).ReturnsAsync([child]);
-        choreRepo.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore1, chore2, chore3]);
-        choreRepo.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(approxNow, 5))).ReturnsAsync([matchingCompletion]);
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore1, chore2, chore3]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(approxNow, 5))).ReturnsAsync([matchingCompletion]);
 
         // Act
         await sut.Initialize();
@@ -101,16 +101,16 @@ public class DailyChoreViewModelTests
     [Test, AutoMoqData]
     public async Task ShouldSwitchToChildsChores_WhenChildSelected(
         Child child1, Child child2, Chore child1Chore, Chore child2Chore,
-        [Frozen] Mock<IChildRepository> childRepo,
-        [Frozen] Mock<IChoreRepository> choreRepo,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
         DailyChoreViewModel sut)
     {
         // Arrange
         var approxNow = DateTimeOffset.Now;
-        childRepo.Setup(r => r.GetChildren()).ReturnsAsync([child1, child2]);
-        choreRepo.Setup(r => r.GetChoresForChild(child1.Id)).ReturnsAsync([child1Chore]);
-        choreRepo.Setup(r => r.GetChoresForChild(child2.Id)).ReturnsAsync([child2Chore]);
-        choreRepo.Setup(r => r.GetCompletionsFor(It.IsAny<string>(), WithinSeconds(approxNow, 5))).ReturnsAsync([]);
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child1, child2]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child1.Id)).ReturnsAsync([child1Chore]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child2.Id)).ReturnsAsync([child2Chore]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(It.IsAny<string>(), WithinSeconds(approxNow, 5))).ReturnsAsync([]);
         await sut.Initialize();
 
         // Act
@@ -124,19 +124,19 @@ public class DailyChoreViewModelTests
     [Test, AutoMoqData]
     public async Task ShouldMarkChoreComplete_WhenCompleted(
         Child child, Chore chore, ChoreCompletion completion,
-        [Frozen] Mock<IChildRepository> childRepo,
-        [Frozen] Mock<IChoreRepository> choreRepo,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
         DailyChoreViewModel sut)
     {
         // Arrange
         var matchingCompletion = completion with { ChoreId = chore.Id };
-        childRepo.Setup(r => r.GetChildren()).ReturnsAsync([child]);
-        choreRepo.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore]);
-        choreRepo.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync([]);
-        choreRepo.Setup(r => r.CompleteChore(chore.Id, child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync(matchingCompletion);
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync([]);
+        choreRepoStub.Setup(r => r.CompleteChore(chore.Id, child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync(matchingCompletion);
         await sut.Initialize();
 
-        choreRepo.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync([matchingCompletion]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync([matchingCompletion]);
 
         // Act
         await sut.Complete(chore);
@@ -149,18 +149,18 @@ public class DailyChoreViewModelTests
     [Test, AutoMoqData]
     public async Task ShouldMarkChoreUncompleted_WhenUndone(
         Child child, Chore chore, ChoreCompletion completion,
-        [Frozen] Mock<IChildRepository> childRepo,
-        [Frozen] Mock<IChoreRepository> choreRepo,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
         DailyChoreViewModel sut)
     {
         // Arrange
         var matchingCompletion = completion with { ChoreId = chore.Id };
-        childRepo.Setup(r => r.GetChildren()).ReturnsAsync([child]);
-        choreRepo.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore]);
-        choreRepo.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync([matchingCompletion]);
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync([matchingCompletion]);
         await sut.Initialize();
 
-        choreRepo.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync([]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, WithinSeconds(DateTimeOffset.Now, 5))).ReturnsAsync([]);
 
         // Act
         await sut.Undo(new CompletedChore(chore, matchingCompletion));

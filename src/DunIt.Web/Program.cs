@@ -14,6 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddSingleton<IChoreRepository, InMemoryChoreRepository>();
 builder.Services.AddSingleton<IChildRepository, InMemoryChildRepository>();
 builder.Services.AddTransient<DailyChoreViewModel>();
+builder.Services.AddTransient<AdminViewModel>();
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
 var host = builder.Build();

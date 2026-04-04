@@ -1,0 +1,85 @@
+@page "/admin"
+@inject AdminViewModel ViewModel
+
+<PageTitle>DunIt — Admin</PageTitle>
+
+<div class="app">
+    <h2>Children</h2>
+
+    <ul class="admin-list">
+        @foreach (var child in ViewModel.Children)
+        {
+            <li class="admin-item">
+                <span class="avatar">@child.Avatar</span>
+                <span class="name">@child.Name</span>
+                <button class="delete-btn" @onclick="() => ViewModel.DeleteChild(child)">🗑</button>
+            </li>
+        }
+    </ul>
+
+    <form class="admin-form" @onsubmit="AddChild" @onsubmit:preventDefault>
+        <input @bind="_newChildName" placeholder="Child's name" />
+        <button type="submit">Add child</button>
+    </form>
+
+    <h2>Chores</h2>
+
+    @foreach (var child in ViewModel.Children)
+    {
+        <h3><span class="avatar">@child.Avatar</span> @child.Name</h3>
+        <ul class="admin-list">
+            @foreach (var chore in ViewModel.ChoresFor(child))
+            {
+                <li class="admin-item">
+                    <span class="chore-title">@chore.Title</span>
+                    <span class="schedule-label">@chore.Schedule.GetType().Name.Replace("Schedule", "")</span>
+                    <button class="delete-btn" @onclick="() => ViewModel.DeleteChore(chore)">🗑</button>
+                </li>
+            }
+        </ul>
+
+        <form class="admin-form" @onsubmit="() => AddChore(child)" @onsubmit:preventDefault>
+            <input @bind="_newChoreTitle" placeholder="Chore title" />
+            <select @bind="_newChoreSchedule">
+                <option value="daily">Every day</option>
+                <option value="weekdays">Weekdays</option>
+                <option value="weekends">Weekends</option>
+            </select>
+            <button type="submit">Add chore</button>
+        </form>
+    }
+
+    <div class="nav-link-row">
+        <a href="/">← Back to chores</a>
+    </div>
+</div>
+
+@code {
+    private string _newChildName = "";
+    private string _newChoreTitle = "";
+    private string _newChoreSchedule = "daily";
+
+    protected override async Task OnInitializedAsync() =>
+        await ViewModel.Initialize();
+
+    private async Task AddChild()
+    {
+        if (string.IsNullOrWhiteSpace(_newChildName)) return;
+        await ViewModel.AddChild(_newChildName);
+        _newChildName = "";
+    }
+
+    private async Task AddChore(Child child)
+    {
+        if (string.IsNullOrWhiteSpace(_newChoreTitle)) return;
+        await ViewModel.AddChore(child, _newChoreTitle, ScheduleFrom(_newChoreSchedule));
+        _newChoreTitle = "";
+    }
+
+    private static ChoreSchedule ScheduleFrom(string key) => key switch
+    {
+        "weekdays" => new WeekdaysSchedule(),
+        "weekends" => new WeekendsSchedule(),
+        _ => new DailySchedule()
+    };
+}
