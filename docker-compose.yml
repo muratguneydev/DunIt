@@ -31,3 +31,5 @@ services:
       - PLAYWRIGHT_SLOW_MO=500
     ports:
       - "7900:7900"
+    volumes:
+      - ./test-results:/results

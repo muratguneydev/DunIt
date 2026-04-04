@@ -63,6 +63,23 @@ PAUSE_BEFORE_TESTS=10 docker compose run --rm e2e
 PAUSE_BEFORE_TESTS=0 docker compose run --rm e2e
 ```
 
+### HTML report
+
+After every run an HTML report is written to `test-results/TestReport.html` on your
+host machine (Docker mounts the `test-results/` directory automatically). Open it
+when the tests finish:
+
+```bash
+# Windows
+start test-results/TestReport.html
+
+# Mac / Linux
+open test-results/TestReport.html
+```
+
+The report shows pass/fail status, duration, and error details for every test — no
+live connection required.
+
 ### How it works
 
 `run-e2e.sh` is the container entry point. It:
