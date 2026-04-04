@@ -77,8 +77,17 @@ start test-results/TestReport.html
 open test-results/TestReport.html
 ```
 
-The report shows pass/fail status, duration, and error details for every test — no
-live connection required.
+The report shows pass/fail status and duration. For a richer view, use the traces.
+
+### Traces
+
+Every test writes a Playwright trace to `test-results/traces/<TestName>.zip`.
+Traces contain a full timeline of every action, DOM snapshot, and screenshot.
+
+To view a trace, drag the `.zip` file onto **https://trace.playwright.dev** — no
+install needed. You'll see exactly what Playwright did, step by step.
+
+On a test failure a screenshot is also saved to `test-results/screenshots/`.
 
 ### How it works
 

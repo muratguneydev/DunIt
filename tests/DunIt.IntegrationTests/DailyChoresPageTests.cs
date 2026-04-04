@@ -1,12 +1,32 @@
 namespace DunIt.IntegrationTests;
 
+using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 
 public class DailyChoresPageTests : PageTest
 {
     private static readonly string BaseUrl =
         Environment.GetEnvironmentVariable("PLAYWRIGHT_BASE_URL") ?? "http://localhost:5000";
+
+    [SetUp]
+    public async Task StartTracing()
+    {
+        await Context.Tracing.StartAsync(new() { Screenshots = true, Snapshots = true });
+    }
+
+    [TearDown]
+    public async Task StopTracing()
+    {
+        var name = TestContext.CurrentContext.Test.Name;
+        var failed = TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed;
+
+        await Context.Tracing.StopAsync(new() { Path = $"/results/traces/{name}.zip" });
+
+        if (failed)
+            await Page.ScreenshotAsync(new() { Path = $"/results/screenshots/{name}.png", FullPage = true });
+    }
 
     [Test]
     public async Task ShouldShowBothChildren_WhenPageLoads()

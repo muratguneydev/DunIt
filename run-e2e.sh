@@ -22,5 +22,8 @@ echo "  Tests start in ${PAUSE} seconds..."
 echo ""
 sleep "$PAUSE"
 
+# Ensure output directories exist
+mkdir -p /results/traces /results/screenshots
+
 # Run the tests
 exec "$@"
