@@ -1,10 +1,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0
 WORKDIR /app
+
 COPY src/DunIt.Core/DunIt.Core.csproj src/DunIt.Core/
 COPY tests/DunIt.Testing/DunIt.Testing.csproj tests/DunIt.Testing/
 COPY tests/DunIt.UnitTests/DunIt.UnitTests.csproj tests/DunIt.UnitTests/
 RUN dotnet restore tests/DunIt.UnitTests/DunIt.UnitTests.csproj
-COPY src/DunIt.Core/ src/DunIt.Core/
-COPY tests/DunIt.Testing/ tests/DunIt.Testing/
-COPY tests/DunIt.UnitTests/ tests/DunIt.UnitTests/
-ENTRYPOINT ["dotnet", "test", "tests/DunIt.UnitTests/DunIt.UnitTests.csproj", "--no-restore"]
+
+ENTRYPOINT ["dotnet", "test", "tests/DunIt.UnitTests/DunIt.UnitTests.csproj"]

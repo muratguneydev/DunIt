@@ -17,6 +17,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    volumes:
+      - ./src:/app/src
+      - ./tests/DunIt.Testing:/app/tests/DunIt.Testing
+      - ./tests/DunIt.UnitTests:/app/tests/DunIt.UnitTests
 
   e2e:
     build:
@@ -32,4 +36,5 @@ services:
     ports:
       - "7900:7900"
     volumes:
+      - ./tests/DunIt.IntegrationTests:/app/tests/DunIt.IntegrationTests
       - ./test-results:/results

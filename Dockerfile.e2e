@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY tests/DunIt.IntegrationTests/DunIt.IntegrationTests.csproj tests/DunIt.IntegrationTests/
 RUN dotnet restore tests/DunIt.IntegrationTests/DunIt.IntegrationTests.csproj
 
-COPY tests/DunIt.IntegrationTests/ tests/DunIt.IntegrationTests/
 COPY run-e2e.sh /run-e2e.sh
 RUN chmod +x /run-e2e.sh
 
-ENTRYPOINT ["/run-e2e.sh", "dotnet", "test", "tests/DunIt.IntegrationTests/DunIt.IntegrationTests.csproj", "--no-restore", "--logger", "html;logfilename=TestReport.html", "--results-directory", "/results"]
+ENTRYPOINT ["/run-e2e.sh", "dotnet", "test", "tests/DunIt.IntegrationTests/DunIt.IntegrationTests.csproj", "--logger", "html;logfilename=TestReport.html", "--results-directory", "/results"]
