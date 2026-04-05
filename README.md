@@ -13,9 +13,11 @@ No local .NET SDK needed — everything runs in Docker.
 ## Run the tests
 
 ```bash
-docker compose build test
+docker compose build test   # first time, or when .csproj files change
 docker compose run --rm test
 ```
+
+Source files are mounted from the host at runtime, so **no rebuild is needed after code changes** — just run the tests again.
 
 ## Run the app
 
@@ -37,10 +39,12 @@ docker compose down
 The E2E tests run against the live web container in a real Chromium browser inside Docker.
 
 ```bash
-docker compose build web e2e
+docker compose build web e2e   # first time, or when .csproj files change
 docker compose up web -d        # start the app
 docker compose run --rm e2e     # run E2E tests
 ```
+
+E2E test source is mounted from the host, so **no rebuild is needed after test changes** — only rebuild `e2e` when `.csproj` files change. Rebuild `web` whenever app source changes.
 
 ### Watching the tests live
 
