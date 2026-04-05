@@ -49,7 +49,7 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 | 15 | ✅ | **Daily chores page** | List today's chores with checkboxes per child |
 | 16 | ✅ | **Child selector** | Switch between children |
 | 17 | ✅ | **Parent admin page** | Add/remove chores and children |
-| 18 | ⬜ | **Mobile CSS** | Responsive layout for phone screens |
+| 18 | ✅ | **Mobile CSS** | Responsive layout for phone screens |
 
 ## Phase 6: Firebase Integration
 | # | Status | Iteration | Description |

@@ -1,5 +1,277 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 html, body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page container ───────────────────────────────────────── */
+
+.app {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    min-height: 100vh;
+}
+
+/* ── Child selector ───────────────────────────────────────── */
+
+.child-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.child-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 8px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.child-btn.active {
+    border-color: #4caf50;
+    background: #f1faf1;
+}
+
+.child-btn .avatar {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.child-btn .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+/* ── Progress ─────────────────────────────────────────────── */
+
+.progress {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #888;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+}
+
+/* ── Chore list ───────────────────────────────────────────── */
+
+.chore-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chore-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 14px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    min-height: 56px;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.chore-item.done {
+    background: #f8fdf8;
+    border-color: #c8e6c9;
+    opacity: 0.7;
+}
+
+.chore-item.done .chore-title {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.chore-check {
+    font-size: 20px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.chore-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1a1a1a;
+    flex: 1;
+}
+
+/* ── Empty state ──────────────────────────────────────────── */
+
+.empty-state {
+    text-align: center;
+    color: #aaa;
+    font-size: 15px;
+    padding: 40px 0;
+}
+
+/* ── Navigation link ──────────────────────────────────────── */
+
+.nav-link-row {
+    margin-top: 28px;
+    text-align: center;
+}
+
+.nav-link-row a {
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* ── Admin headings ───────────────────────────────────────── */
+
+.app h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 24px 0 10px;
+}
+
+.app h2:first-child {
+    margin-top: 0;
+}
+
+.app h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
+    margin: 18px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── Admin list ───────────────────────────────────────────── */
+
+.admin-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    min-height: 48px;
+}
+
+.admin-item .avatar {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.admin-item .name {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.admin-item .chore-title {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a1a1a;
+    text-decoration: none;
+}
+
+.schedule-label {
+    font-size: 12px;
+    color: #aaa;
+    flex-shrink: 0;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    font-size: 16px;
+    opacity: 0.4;
+    flex-shrink: 0;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.delete-btn:hover {
+    opacity: 0.8;
+}
+
+/* ── Admin form ───────────────────────────────────────────── */
+
+.admin-form {
+    display: flex;
+    gap: 8px;
+    margin: 6px 0 16px;
+    flex-wrap: wrap;
+}
+
+.admin-form input,
+.admin-form select {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #fff;
+    color: #1a1a1a;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.admin-form input:focus,
+.admin-form select:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.admin-form button {
+    padding: 10px 16px;
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.admin-form button:active {
+    background: #43a047;
 }
