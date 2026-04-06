@@ -1,5 +1,6 @@
 namespace DunIt.IntegrationTests.Mobile;
 
+using DunIt.IntegrationTests.Firebase;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
@@ -14,7 +15,12 @@ public class MobileChoresPageTests : PageTest
         Playwright.Devices["iPhone 14"];
 
     [SetUp]
-    public Task StartTracing() => PlaywrightTracing.Start(Context);
+    public async Task SetUp()
+    {
+        await FirestoreEmulator.SeedDefaultData();
+        await PlaywrightTracing.Start(Context);
+        Page.SetDefaultTimeout(15000);
+    }
 
     [TearDown]
     public Task StopTracing() => PlaywrightTracing.Stop(Context, Page,

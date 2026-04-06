@@ -1,5 +1,6 @@
 namespace DunIt.IntegrationTests;
 
+using DunIt.IntegrationTests.Firebase;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
@@ -10,7 +11,12 @@ public class DailyChoresPageTests : PageTest
         Environment.GetEnvironmentVariable("PLAYWRIGHT_BASE_URL") ?? "http://localhost:5000";
 
     [SetUp]
-    public Task StartTracing() => PlaywrightTracing.Start(Context);
+    public async Task SetUp()
+    {
+        await FirestoreEmulator.SeedDefaultData();
+        await PlaywrightTracing.Start(Context);
+        Page.SetDefaultTimeout(15000);
+    }
 
     [TearDown]
     public Task StopTracing() => PlaywrightTracing.Stop(Context, Page,

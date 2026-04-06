@@ -1,5 +1,6 @@
 namespace DunIt.IntegrationTests.Mobile;
 
+using DunIt.IntegrationTests.Firebase;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
@@ -14,7 +15,12 @@ public class MobileAdminPageTests : PageTest
         Playwright.Devices["iPhone 14"];
 
     [SetUp]
-    public Task StartTracing() => PlaywrightTracing.Start(Context);
+    public async Task SetUp()
+    {
+        await FirestoreEmulator.SeedDefaultData();
+        await PlaywrightTracing.Start(Context);
+        Page.SetDefaultTimeout(15000);
+    }
 
     [TearDown]
     public Task StopTracing() => PlaywrightTracing.Stop(Context, Page,
@@ -35,11 +41,13 @@ public class MobileAdminPageTests : PageTest
     public async Task ShouldAddChild_WhenFormSubmitted()
     {
         await Page.GotoAsync(AdminUrl);
+        await Expect(Page.Locator(".admin-list").First.GetByText("Alice")).ToBeVisibleAsync();
 
         await Page.GetByPlaceholder("Child's name").FillAsync("Charlie");
         await Page.GetByRole(AriaRole.Button, new() { Name = "Add child" }).ClickAsync();
 
-        await Expect(Page.Locator(".admin-list").First.GetByText("Charlie")).ToBeVisibleAsync();
+        await Expect(Page.Locator(".admin-list").First.GetByText("Charlie"))
+            .ToBeVisibleAsync(new() { Timeout = 30000 });
     }
 
     [Test]

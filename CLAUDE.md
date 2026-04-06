@@ -10,11 +10,15 @@ No local .NET SDK — everything runs in Docker.
 # Build
 docker compose build
 
-# Run all tests
+# Run unit tests
 docker compose build test
 docker compose run --rm test
 
-# Run the app (serves Blazor WASM on http://localhost:5000)
+# Run E2E tests (Playwright + Firebase Emulator)
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml build
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml run --rm e2e
+
+# Run the app (serves Blazor WASM on http://localhost:5000, uses real Firebase)
 docker compose build web
 docker compose up web
 ```
@@ -46,7 +50,7 @@ DunIt is a kids' chore tracker — a Blazor WebAssembly PWA backed by Firebase (
 
 ### Repository pattern
 
-Data access is behind repository interfaces (`IChoreRepository`, `IChildRepository`). `InMemory*` implementations are used in development and tests. `Firebase*` implementations will be added in Phase 6.
+Data access is behind repository interfaces (`IChoreRepository`, `IChildRepository`). `Firebase*` implementations back both the web app and E2E tests. `InMemory*` implementations remain for unit tests only.
 
 ### Test conventions
 
