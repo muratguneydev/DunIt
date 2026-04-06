@@ -1,0 +1,25 @@
+services:
+  emulator:
+    build:
+      context: .
+      dockerfile: Dockerfile.emulator
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:8080 2>&1; exit 0"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  web:
+    volumes:
+      - ./src/DunIt.Web/wwwroot/appsettings.e2e.json:/usr/share/nginx/html/appsettings.json:ro
+    depends_on:
+      emulator:
+        condition: service_healthy
+
+  e2e:
+    depends_on:
+      emulator:
+        condition: service_healthy
+    environment:
+      - FIRESTORE_EMULATOR_URL=http://emulator:8080
