@@ -105,6 +105,35 @@ On a test failure a screenshot is also saved to `test-results/screenshots/`.
 5. Runs `dotnet test` with `HEADED=1` and `PLAYWRIGHT_SLOW_MO=500`, so Chromium
    is visible and each action is slowed down by 500 ms.
 
+## How the app works in production
+
+The live app is at **https://dunit-f0149.web.app**.
+
+### User accounts
+
+The app uses Firebase Authentication with email and password. There is no
+self-registration — accounts are created manually in the Firebase Console:
+
+1. Go to [Firebase Console](https://console.firebase.google.com) → **dunit-f0149** → **Authentication** → **Users**
+2. Click **"Add user"** and enter an email and password for each family member
+3. Up to 4 accounts: 1 parent + up to 3 children
+
+### Signing in
+
+Each family member opens the app, enters their email and password, and lands on
+their daily chore view. The session persists across page refreshes — no need to
+sign in again unless they explicitly sign out.
+
+### Parent vs child
+
+- **Children** see their own chore list for today and can tap to mark chores done or undo them.
+- **The parent** uses the Admin page (linked from the home page) to add/remove chores and manage children.
+
+### Real-time sync
+
+All devices update live via Firestore `onSnapshot` listeners — when a child marks
+a chore done, the parent's view updates instantly with no page refresh needed.
+
 ## Deploy to Firebase Hosting
 
 The app is hosted at **https://dunit-f0149.web.app**.
