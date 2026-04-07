@@ -1,5 +1,6 @@
 @page "/admin"
 @inject AdminViewModel ViewModel
+@inject IAuthService Auth
 @implements IAsyncDisposable
 
 <PageTitle>DunIt — Admin</PageTitle>
@@ -52,6 +53,7 @@
 
     <div class="nav-link-row">
         <a href="/">← Back to chores</a>
+        <button class="sign-out-btn" @onclick="Auth.SignOut">Sign out</button>
     </div>
 </div>
 

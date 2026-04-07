@@ -92,4 +92,12 @@ public class AdminPageTests : PageTest
         await Expect(Page.Locator(".admin-item").Filter(new() { HasText = "Make bed" }))
             .ToHaveCountAsync(1);
     }
+
+    [Test]
+    public async Task ShouldShowSignOutButton_WhenAuthenticated()
+    {
+        await Page.GotoAsync(AdminUrl);
+
+        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Sign out" })).ToBeVisibleAsync();
+    }
 }

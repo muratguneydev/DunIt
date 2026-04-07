@@ -102,4 +102,22 @@ public class DailyChoresPageTests : PageTest
 
         await Expect(Page.GetByText("1 /")).ToBeVisibleAsync();
     }
+
+    [Test]
+    public async Task ShouldShowGetStartedLink_WhenNoChildrenExist()
+    {
+        await FirestoreEmulator.ClearAll();
+        await Page.GotoAsync(BaseUrl);
+
+        await Expect(Page.GetByText("No children added yet.")).ToBeVisibleAsync();
+        await Expect(Page.GetByRole(Microsoft.Playwright.AriaRole.Link, new() { Name = "Go to Admin to get started →" })).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task ShouldShowSignOutButton_WhenAuthenticated()
+    {
+        await Page.GotoAsync(BaseUrl);
+
+        await Expect(Page.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Sign out" })).ToBeVisibleAsync();
+    }
 }

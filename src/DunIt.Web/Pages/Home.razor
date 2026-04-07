@@ -1,5 +1,6 @@
 @page "/"
 @inject DailyChoreViewModel ViewModel
+@inject IAuthService Auth
 @implements IAsyncDisposable
 
 <PageTitle>DunIt</PageTitle>
@@ -7,7 +8,10 @@
 <div class="app">
     @if (!ViewModel.Children.Any())
     {
-        <p class="empty-state">No children added yet.</p>
+        <div class="empty-state">
+            <p>No children added yet.</p>
+            <a href="/admin">Go to Admin to get started →</a>
+        </div>
     }
     else
     {
@@ -51,6 +55,7 @@
 
     <div class="nav-link-row">
         <a href="/admin">⚙ Manage chores</a>
+        <button class="sign-out-btn" @onclick="Auth.SignOut">Sign out</button>
     </div>
 </div>
 

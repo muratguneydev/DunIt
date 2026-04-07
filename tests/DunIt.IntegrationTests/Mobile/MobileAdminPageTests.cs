@@ -64,4 +64,12 @@ public class MobileAdminPageTests : PageTest
 
         await Expect(Page.GetByText("Do laundry")).ToBeVisibleAsync();
     }
+
+    [Test]
+    public async Task ShouldShowSignOutButton_WhenAuthenticated()
+    {
+        await Page.GotoAsync(AdminUrl);
+
+        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Sign out" })).ToBeVisibleAsync();
+    }
 }

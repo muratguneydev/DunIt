@@ -53,4 +53,24 @@ public class LoginPageTests : PageTest
 
         await Expect(Page.GetByText("Invalid email or password.")).ToBeVisibleAsync();
     }
+
+    [Test]
+    public async Task ShouldShowLoginForm_WhenSignedOutFromHomePage()
+    {
+        await FirebaseAuthEmulator.SignIn(Page, BaseUrl);
+        await Page.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Sign out" }).ClickAsync();
+
+        await Expect(Page.Locator("input[type=email]")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task ShouldShowLoginForm_WhenSignedOutFromAdminPage()
+    {
+        var adminUrl = BaseUrl + "/admin";
+        await FirebaseAuthEmulator.SignIn(Page, BaseUrl);
+        await Page.GotoAsync(adminUrl);
+        await Page.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Sign out" }).ClickAsync();
+
+        await Expect(Page.Locator("input[type=email]")).ToBeVisibleAsync();
+    }
 }
