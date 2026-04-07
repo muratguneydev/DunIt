@@ -13,15 +13,15 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
         return ToChore(saved);
     }
 
-    public Task DeleteChore(string choreId) => interop.DeleteChore(choreId);
+    public Task DeleteChore(ChoreId choreId) => interop.DeleteChore(choreId);
 
-    public async Task<IReadOnlyList<Chore>> GetChoresForChild(string childId)
+    public async Task<IReadOnlyList<Chore>> GetChoresForChild(ChildId childId)
     {
         var dtos = await interop.GetChoresForChild(childId);
         return dtos.Select(ToChore).ToList();
     }
 
-    public async Task<ChoreCompletion> CompleteChore(string choreId, string childId, DateTimeOffset completedAt)
+    public async Task<ChoreCompletion> CompleteChore(ChoreId choreId, ChildId childId, DateTimeOffset completedAt)
     {
         var dto = new ChoreCompletionDto(
             Guid.NewGuid().ToString(),
@@ -32,9 +32,9 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
         return ToCompletion(saved);
     }
 
-    public Task UndoChore(string completionId) => interop.UndoChore(completionId);
+    public Task UndoChore(ChoreCompletionId completionId) => interop.UndoChore(completionId);
 
-    public async Task<IReadOnlyList<ChoreCompletion>> GetCompletionsFor(string childId, DateTimeOffset date)
+    public async Task<IReadOnlyList<ChoreCompletion>> GetCompletionsFor(ChildId childId, DateTimeOffset date)
     {
         var dateStr = date.ToString("yyyy-MM-dd");
         var dtos = await interop.GetCompletionsFor(childId, dateStr);
@@ -42,10 +42,10 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
     }
 
     private static Chore ToChore(ChoreDto dto) =>
-        new(dto.Id, dto.Title, dto.AssignedTo, ToSchedule(dto.ScheduleType));
+        new(new ChoreId(dto.Id), dto.Title, new ChildId(dto.AssignedTo), ToSchedule(dto.ScheduleType));
 
     private static ChoreCompletion ToCompletion(ChoreCompletionDto dto) =>
-        new(dto.Id, dto.ChoreId, dto.ChildId,
+        new(new ChoreCompletionId(dto.Id), new ChoreId(dto.ChoreId), new ChildId(dto.ChildId),
             DateTimeOffset.Parse(dto.CompletedAt, null, System.Globalization.DateTimeStyles.RoundtripKind));
 
     private static ChoreSchedule ToSchedule(string scheduleType) => scheduleType switch
@@ -55,7 +55,7 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
         _ => new DailySchedule()
     };
 
-    public async Task<ISubscription> SubscribeToChores(string childId, Action<IReadOnlyList<Chore>> onUpdate)
+    public async Task<ISubscription> SubscribeToChores(ChildId childId, Action<IReadOnlyList<Chore>> onUpdate)
     {
         var id = await interop.SubscribeToChores(childId, dtos =>
         {
@@ -65,7 +65,7 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
         return new FirebaseSubscription(id, interop);
     }
 
-    public async Task<ISubscription> SubscribeToCompletions(string childId, DateTimeOffset date, Action<IReadOnlyList<ChoreCompletion>> onUpdate)
+    public async Task<ISubscription> SubscribeToCompletions(ChildId childId, DateTimeOffset date, Action<IReadOnlyList<ChoreCompletion>> onUpdate)
     {
         var dateStr = date.ToString("yyyy-MM-dd");
         var id = await interop.SubscribeToCompletions(childId, dateStr, dtos =>

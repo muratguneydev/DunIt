@@ -9,7 +9,7 @@ using Shouldly;
 public class ChoreTests
 {
     [Test, AutoData]
-    public void ShouldBeScheduled_WhenScheduleSaysTrue(string id, string title, string assignedTo, DateTimeOffset dateTime)
+    public void ShouldBeScheduled_WhenScheduleSaysTrue(ChoreId id, string title, ChildId assignedTo, DateTimeOffset dateTime)
     {
         // Arrange
         var chore = new Chore(id, title, assignedTo, new DailySchedule());
@@ -19,7 +19,7 @@ public class ChoreTests
     }
 
     [Test, AutoData]
-    public void ShouldNotBeScheduled_WhenScheduleSaysFalse(string id, string title, string assignedTo)
+    public void ShouldNotBeScheduled_WhenScheduleSaysFalse(ChoreId id, string title, ChildId assignedTo)
     {
         // Arrange
         var weekday = new DateTimeOffset(2026, 4, 1, 9, 0, 0, TimeSpan.Zero); // Wednesday

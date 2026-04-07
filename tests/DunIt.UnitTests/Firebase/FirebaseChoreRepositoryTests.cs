@@ -13,7 +13,7 @@ public class FirebaseChoreRepositoryTests
 {
     [Test, AutoMoqData]
     public async Task ShouldAddChore_WhenChoreProvided(
-        string choreId, string title, string assignedTo,
+        ChoreId choreId, string title, ChildId assignedTo,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropSpy,
         FirebaseChoreRepository sut)
     {
@@ -27,7 +27,7 @@ public class FirebaseChoreRepositoryTests
 
         // Assert
         firebaseInteropSpy.Verify(f => f.AddChore(
-            It.Is<ChoreDto>(d => d.Id == choreId && d.Title == title && d.AssignedTo == assignedTo && d.ScheduleType == "daily")),
+            It.Is<ChoreDto>(d => d.Id == choreId.Value && d.Title == title && d.AssignedTo == assignedTo.Value && d.ScheduleType == "daily")),
             Times.Once);
         result.Id.ShouldBe(choreId);
         result.Title.ShouldBe(title);
@@ -35,7 +35,7 @@ public class FirebaseChoreRepositoryTests
 
     [Test, AutoMoqData]
     public async Task ShouldMapWeekdaysSchedule_WhenChoreHasWeekdaysSchedule(
-        string choreId, string title, string assignedTo,
+        ChoreId choreId, string title, ChildId assignedTo,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropSpy,
         FirebaseChoreRepository sut)
     {
@@ -55,7 +55,7 @@ public class FirebaseChoreRepositoryTests
 
     [Test, AutoMoqData]
     public async Task ShouldDeleteChore_WhenChoreDeleted(
-        string choreId,
+        ChoreId choreId,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropSpy,
         FirebaseChoreRepository sut)
     {
@@ -68,7 +68,7 @@ public class FirebaseChoreRepositoryTests
 
     [Test, AutoMoqData]
     public async Task ShouldReturnChores_WhenChildHasChores(
-        string childId,
+        ChildId childId,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseChoreRepository sut)
     {
@@ -84,15 +84,15 @@ public class FirebaseChoreRepositoryTests
 
         // Assert
         result.Count.ShouldBe(2);
-        result[0].Id.ShouldBe("c1");
+        result[0].Id.Value.ShouldBe("c1");
         result[0].Schedule.ShouldBeOfType<DailySchedule>();
-        result[1].Id.ShouldBe("c2");
+        result[1].Id.Value.ShouldBe("c2");
         result[1].Schedule.ShouldBeOfType<WeekdaysSchedule>();
     }
 
     [Test, AutoMoqData]
     public async Task ShouldCompleteChore_WhenChoreCompleted(
-        string choreId, string childId,
+        ChoreId choreId, ChildId childId,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropSpy,
         FirebaseChoreRepository sut)
     {
@@ -106,7 +106,7 @@ public class FirebaseChoreRepositoryTests
 
         // Assert
         firebaseInteropSpy.Verify(f => f.CompleteChore(
-            It.Is<ChoreCompletionDto>(d => d.ChoreId == choreId && d.ChildId == childId)),
+            It.Is<ChoreCompletionDto>(d => d.ChoreId == choreId.Value && d.ChildId == childId.Value)),
             Times.Once);
         result.ChoreId.ShouldBe(choreId);
         result.ChildId.ShouldBe(childId);
@@ -115,7 +115,7 @@ public class FirebaseChoreRepositoryTests
 
     [Test, AutoMoqData]
     public async Task ShouldUndoChore_WhenCompletionUndone(
-        string completionId,
+        ChoreCompletionId completionId,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropSpy,
         FirebaseChoreRepository sut)
     {
@@ -128,7 +128,7 @@ public class FirebaseChoreRepositoryTests
 
     [Test, AutoMoqData]
     public async Task ShouldReturnCompletions_WhenCompletionsExistForDate(
-        string childId,
+        ChildId childId,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseChoreRepository sut)
     {
@@ -144,7 +144,7 @@ public class FirebaseChoreRepositoryTests
 
         // Assert
         result.Count.ShouldBe(1);
-        result[0].Id.ShouldBe("comp-1");
+        result[0].Id.Value.ShouldBe("comp-1");
         result[0].ChildId.ShouldBe(childId);
     }
 }

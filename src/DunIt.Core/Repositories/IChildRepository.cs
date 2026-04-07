@@ -5,7 +5,7 @@ using DunIt.Core.Models;
 public interface IChildRepository
 {
     Task<Child> AddChild(Child child);
-    Task DeleteChild(string childId);
+    Task DeleteChild(ChildId childId);
     Task<IReadOnlyList<Child>> GetChildren();
     Task<ISubscription> Subscribe(Action<IReadOnlyList<Child>> onUpdate);
 }

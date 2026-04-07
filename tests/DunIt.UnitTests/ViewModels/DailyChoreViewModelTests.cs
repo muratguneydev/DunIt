@@ -110,7 +110,7 @@ public class DailyChoreViewModelTests
         childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child1, child2]);
         choreRepoStub.Setup(r => r.GetChoresForChild(child1.Id)).ReturnsAsync([child1Chore]);
         choreRepoStub.Setup(r => r.GetChoresForChild(child2.Id)).ReturnsAsync([child2Chore]);
-        choreRepoStub.Setup(r => r.GetCompletionsFor(It.IsAny<string>(), WithinSeconds(approxNow, 5))).ReturnsAsync([]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(It.IsAny<ChildId>(), WithinSeconds(approxNow, 5))).ReturnsAsync([]);
         await sut.Initialize();
 
         // Act
@@ -210,7 +210,7 @@ public class DailyChoreViewModelTests
         Action<IReadOnlyList<Chore>>? capturedCallback = null;
         choreRepoStub
             .Setup(r => r.SubscribeToChores(child.Id, It.IsAny<Action<IReadOnlyList<Chore>>>()))
-            .Callback<string, Action<IReadOnlyList<Chore>>>((_, cb) => capturedCallback = cb)
+            .Callback<ChildId, Action<IReadOnlyList<Chore>>>((_, cb) => capturedCallback = cb)
             .ReturnsAsync(Mock.Of<ISubscription>());
         await sut.Initialize();
         var stateChangedFired = false;
@@ -239,7 +239,7 @@ public class DailyChoreViewModelTests
         Action<IReadOnlyList<ChoreCompletion>>? capturedCallback = null;
         choreRepoStub
             .Setup(r => r.SubscribeToCompletions(child.Id, It.IsAny<DateTimeOffset>(), It.IsAny<Action<IReadOnlyList<ChoreCompletion>>>()))
-            .Callback<string, DateTimeOffset, Action<IReadOnlyList<ChoreCompletion>>>((_, __, cb) => capturedCallback = cb)
+            .Callback<ChildId, DateTimeOffset, Action<IReadOnlyList<ChoreCompletion>>>((_, __, cb) => capturedCallback = cb)
             .ReturnsAsync(Mock.Of<ISubscription>());
         await sut.Initialize();
         var stateChangedFired = false;

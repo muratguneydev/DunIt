@@ -8,7 +8,7 @@ public class AdminViewModel : IAsyncDisposable
 {
     private readonly IChoreRepository _choreRepository;
     private readonly IChildRepository _childRepository;
-    private Dictionary<string, IReadOnlyList<Chore>> _choresByChildId = new();
+    private Dictionary<ChildId, IReadOnlyList<Chore>> _choresByChildId = new();
     private ISubscription _childrenSub = NullSubscription.Instance;
 
     public event Action StateChanged = delegate { };
@@ -40,7 +40,7 @@ public class AdminViewModel : IAsyncDisposable
 
     public async Task AddChild(string name)
     {
-        await _childRepository.AddChild(new Child(Guid.NewGuid().ToString(), name));
+        await _childRepository.AddChild(new Child(new ChildId(Guid.NewGuid().ToString()), name));
         await Refresh();
     }
 
@@ -55,7 +55,7 @@ public class AdminViewModel : IAsyncDisposable
 
     public async Task AddChore(Child child, string title, ChoreSchedule schedule)
     {
-        await _choreRepository.AddChore(new Chore(Guid.NewGuid().ToString(), title, child.Id, schedule));
+        await _choreRepository.AddChore(new Chore(new ChoreId(Guid.NewGuid().ToString()), title, child.Id, schedule));
         await RefreshChoresFor(child);
     }
 
@@ -79,7 +79,7 @@ public class AdminViewModel : IAsyncDisposable
 
     private async Task RefreshChores()
     {
-        var dict = new Dictionary<string, IReadOnlyList<Chore>>();
+        var dict = new Dictionary<ChildId, IReadOnlyList<Chore>>();
         foreach (var child in Children)
             dict[child.Id] = await _choreRepository.GetChoresForChild(child.Id);
         _choresByChildId = dict;
@@ -87,7 +87,7 @@ public class AdminViewModel : IAsyncDisposable
 
     private async Task RefreshChoresFor(Child child) => await RefreshChoresFor(child.Id);
 
-    private async Task RefreshChoresFor(string childId)
+    private async Task RefreshChoresFor(ChildId childId)
     {
         _choresByChildId[childId] = await _choreRepository.GetChoresForChild(childId);
     }

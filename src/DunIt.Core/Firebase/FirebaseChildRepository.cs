@@ -9,22 +9,22 @@ public class FirebaseChildRepository(IFirebaseInterop interop) : IChildRepositor
     {
         var dto = new ChildDto(child.Id, child.Name, child.Avatar);
         var saved = await interop.AddChild(dto);
-        return new Child(saved.Id, saved.Name, saved.Avatar);
+        return new Child(new ChildId(saved.Id), saved.Name, saved.Avatar);
     }
 
-    public Task DeleteChild(string childId) => interop.DeleteChild(childId);
+    public Task DeleteChild(ChildId childId) => interop.DeleteChild(childId);
 
     public async Task<IReadOnlyList<Child>> GetChildren()
     {
         var dtos = await interop.GetChildren();
-        return dtos.Select(d => new Child(d.Id, d.Name, d.Avatar)).ToList();
+        return dtos.Select(d => new Child(new ChildId(d.Id), d.Name, d.Avatar)).ToList();
     }
 
     public async Task<ISubscription> Subscribe(Action<IReadOnlyList<Child>> onUpdate)
     {
         var id = await interop.SubscribeToChildren(dtos =>
         {
-            onUpdate(dtos.Select(d => new Child(d.Id, d.Name, d.Avatar)).ToList());
+            onUpdate(dtos.Select(d => new Child(new ChildId(d.Id), d.Name, d.Avatar)).ToList());
             return Task.CompletedTask;
         });
         return new FirebaseSubscription(id, interop);

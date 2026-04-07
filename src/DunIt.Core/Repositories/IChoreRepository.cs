@@ -5,11 +5,11 @@ using DunIt.Core.Models;
 public interface IChoreRepository
 {
     Task<Chore> AddChore(Chore chore);
-    Task DeleteChore(string choreId);
-    Task<IReadOnlyList<Chore>> GetChoresForChild(string childId);
-    Task<ChoreCompletion> CompleteChore(string choreId, string childId, DateTimeOffset completedAt);
-    Task UndoChore(string completionId);
-    Task<IReadOnlyList<ChoreCompletion>> GetCompletionsFor(string childId, DateTimeOffset date);
-    Task<ISubscription> SubscribeToChores(string childId, Action<IReadOnlyList<Chore>> onUpdate);
-    Task<ISubscription> SubscribeToCompletions(string childId, DateTimeOffset date, Action<IReadOnlyList<ChoreCompletion>> onUpdate);
+    Task DeleteChore(ChoreId choreId);
+    Task<IReadOnlyList<Chore>> GetChoresForChild(ChildId childId);
+    Task<ChoreCompletion> CompleteChore(ChoreId choreId, ChildId childId, DateTimeOffset completedAt);
+    Task UndoChore(ChoreCompletionId completionId);
+    Task<IReadOnlyList<ChoreCompletion>> GetCompletionsFor(ChildId childId, DateTimeOffset date);
+    Task<ISubscription> SubscribeToChores(ChildId childId, Action<IReadOnlyList<Chore>> onUpdate);
+    Task<ISubscription> SubscribeToCompletions(ChildId childId, DateTimeOffset date, Action<IReadOnlyList<ChoreCompletion>> onUpdate);
 }

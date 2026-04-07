@@ -21,7 +21,7 @@ public class AdminViewModelTests
     {
         // Arrange
         childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync(children);
-        choreRepoDummy.Setup(r => r.GetChoresForChild(It.IsAny<string>())).ReturnsAsync([]);
+        choreRepoDummy.Setup(r => r.GetChoresForChild(It.IsAny<ChildId>())).ReturnsAsync([]);
 
         // Act
         await sut.Initialize();

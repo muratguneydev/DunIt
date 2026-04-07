@@ -25,14 +25,14 @@ public class FirebaseChildRepositoryTests
 
         // Assert
         firebaseInteropSpy.Verify(f => f.AddChild(
-            It.Is<ChildDto>(d => d.Id == child.Id && d.Name == child.Name && d.Avatar == child.Avatar)),
+            It.Is<ChildDto>(d => d.Id == child.Id.Value && d.Name == child.Name && d.Avatar == child.Avatar)),
             Times.Once);
         result.ShouldBe(child);
     }
 
     [Test, AutoMoqData]
     public async Task ShouldDeleteChild_WhenChildDeleted(
-        string childId,
+        ChildId childId,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropSpy,
         FirebaseChildRepository sut)
     {
@@ -60,8 +60,8 @@ public class FirebaseChildRepositoryTests
 
         // Assert
         result.Count.ShouldBe(2);
-        result[0].Id.ShouldBe("child-1");
+        result[0].Id.Value.ShouldBe("child-1");
         result[0].Name.ShouldBe("Alice");
-        result[1].Id.ShouldBe("child-2");
+        result[1].Id.Value.ShouldBe("child-2");
     }
 }
