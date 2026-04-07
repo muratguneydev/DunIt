@@ -78,6 +78,19 @@ public class DailyChoresPageTests : PageTest
     }
 
     [Test]
+    public async Task ShouldShowNewChild_WhenAddedExternallyWhilePageIsOpen()
+    {
+        await Page.GotoAsync(BaseUrl);
+        await Expect(Page.GetByText("Alice")).ToBeVisibleAsync();
+
+        // Simulate another device adding a child
+        await FirestoreEmulator.AddChild("child-99", "Charlie", "🧒");
+
+        // Charlie should appear in the child selector without a page reload
+        await Expect(Page.GetByText("Charlie")).ToBeVisibleAsync();
+    }
+
+    [Test]
     public async Task ShouldUpdateProgress_WhenChoreCompleted()
     {
         await Page.GotoAsync(BaseUrl);

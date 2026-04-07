@@ -1,5 +1,6 @@
 @page "/"
 @inject DailyChoreViewModel ViewModel
+@implements IAsyncDisposable
 
 <PageTitle>DunIt</PageTitle>
 
@@ -54,6 +55,17 @@
 </div>
 
 @code {
-    protected override async Task OnInitializedAsync() =>
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.StateChanged += OnStateChanged;
         await ViewModel.Initialize();
+    }
+
+    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+
+    public ValueTask DisposeAsync()
+    {
+        ViewModel.StateChanged -= OnStateChanged;
+        return ValueTask.CompletedTask;
+    }
 }

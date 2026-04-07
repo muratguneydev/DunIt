@@ -19,4 +19,14 @@ public class FirebaseChildRepository(IFirebaseInterop interop) : IChildRepositor
         var dtos = await interop.GetChildren();
         return dtos.Select(d => new Child(d.Id, d.Name, d.Avatar)).ToList();
     }
+
+    public async Task<ISubscription> Subscribe(Action<IReadOnlyList<Child>> onUpdate)
+    {
+        var id = await interop.SubscribeToChildren(dtos =>
+        {
+            onUpdate(dtos.Select(d => new Child(d.Id, d.Name, d.Avatar)).ToList());
+            return Task.CompletedTask;
+        });
+        return new FirebaseSubscription(id, interop);
+    }
 }

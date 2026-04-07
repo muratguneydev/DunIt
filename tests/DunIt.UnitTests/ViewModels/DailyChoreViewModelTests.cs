@@ -170,6 +170,90 @@ public class DailyChoreViewModelTests
         sut.CompletedChores.ShouldBeEmpty();
     }
 
+    [Test, AutoMoqData]
+    public async Task ShouldFireStateChanged_WhenChildrenSubscriptionUpdates(
+        List<Child> updatedChildren,
+        [Frozen] Mock<IChoreRepository> choreRepoDummy,
+        [Frozen] Mock<IChildRepository> childRepoStub,
+        DailyChoreViewModel sut)
+    {
+        // Arrange
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([]);
+        Action<IReadOnlyList<Child>>? capturedCallback = null;
+        childRepoStub
+            .Setup(r => r.Subscribe(It.IsAny<Action<IReadOnlyList<Child>>>()))
+            .Callback<Action<IReadOnlyList<Child>>>(cb => capturedCallback = cb)
+            .ReturnsAsync(Mock.Of<ISubscription>());
+        await sut.Initialize();
+        var stateChangedFired = false;
+        sut.StateChanged += () => stateChangedFired = true;
+
+        // Act
+        capturedCallback!(updatedChildren);
+
+        // Assert
+        stateChangedFired.ShouldBeTrue();
+        sut.Children.ShouldBe(updatedChildren);
+    }
+
+    [Test, AutoMoqData]
+    public async Task ShouldFireStateChanged_WhenChoreSubscriptionFires(
+        Child child, List<Chore> updatedChores,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
+        DailyChoreViewModel sut)
+    {
+        // Arrange
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, It.IsAny<DateTimeOffset>())).ReturnsAsync([]);
+        Action<IReadOnlyList<Chore>>? capturedCallback = null;
+        choreRepoStub
+            .Setup(r => r.SubscribeToChores(child.Id, It.IsAny<Action<IReadOnlyList<Chore>>>()))
+            .Callback<string, Action<IReadOnlyList<Chore>>>((_, cb) => capturedCallback = cb)
+            .ReturnsAsync(Mock.Of<ISubscription>());
+        await sut.Initialize();
+        var stateChangedFired = false;
+        sut.StateChanged += () => stateChangedFired = true;
+
+        // Act
+        capturedCallback!(updatedChores);
+
+        // Assert
+        stateChangedFired.ShouldBeTrue();
+        sut.UncompletedChores.ShouldBe(updatedChores);
+    }
+
+    [Test, AutoMoqData]
+    public async Task ShouldFireStateChanged_WhenCompletionSubscriptionFires(
+        Child child, Chore chore, ChoreCompletion completion,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
+        DailyChoreViewModel sut)
+    {
+        // Arrange
+        var matchingCompletion = completion with { ChoreId = chore.Id };
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([chore]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child.Id, It.IsAny<DateTimeOffset>())).ReturnsAsync([]);
+        Action<IReadOnlyList<ChoreCompletion>>? capturedCallback = null;
+        choreRepoStub
+            .Setup(r => r.SubscribeToCompletions(child.Id, It.IsAny<DateTimeOffset>(), It.IsAny<Action<IReadOnlyList<ChoreCompletion>>>()))
+            .Callback<string, DateTimeOffset, Action<IReadOnlyList<ChoreCompletion>>>((_, __, cb) => capturedCallback = cb)
+            .ReturnsAsync(Mock.Of<ISubscription>());
+        await sut.Initialize();
+        var stateChangedFired = false;
+        sut.StateChanged += () => stateChangedFired = true;
+
+        // Act
+        capturedCallback!([matchingCompletion]);
+
+        // Assert
+        stateChangedFired.ShouldBeTrue();
+        sut.CompletedChores.ShouldHaveSingleItem();
+        sut.CompletedChores[0].Chore.ShouldBe(chore);
+    }
+
     private static DateTimeOffset WithinSeconds(DateTimeOffset reference, int seconds) =>
         It.Is<DateTimeOffset>(dt => Math.Abs((dt - reference).TotalSeconds) < seconds);
 }

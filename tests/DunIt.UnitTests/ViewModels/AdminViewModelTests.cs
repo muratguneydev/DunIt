@@ -139,6 +139,32 @@ public class AdminViewModelTests
     }
 
     [Test, AutoMoqData]
+    public async Task ShouldFireStateChanged_WhenChildrenSubscriptionUpdates(
+        List<Child> updatedChildren,
+        [Frozen] Mock<IChoreRepository> choreRepoDummy,
+        [Frozen] Mock<IChildRepository> childRepoStub,
+        AdminViewModel sut)
+    {
+        // Arrange
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([]);
+        Action<IReadOnlyList<Child>>? capturedCallback = null;
+        childRepoStub
+            .Setup(r => r.Subscribe(It.IsAny<Action<IReadOnlyList<Child>>>()))
+            .Callback<Action<IReadOnlyList<Child>>>(cb => capturedCallback = cb)
+            .ReturnsAsync(Mock.Of<ISubscription>());
+        await sut.Initialize();
+        var stateChangedFired = false;
+        sut.StateChanged += () => stateChangedFired = true;
+
+        // Act
+        capturedCallback!(updatedChildren);
+
+        // Assert
+        stateChangedFired.ShouldBeTrue();
+        sut.Children.ShouldBe(updatedChildren);
+    }
+
+    [Test, AutoMoqData]
     public async Task ShouldDeleteChore_WhenChoreDeleted(
         Child child,
         Chore chore,

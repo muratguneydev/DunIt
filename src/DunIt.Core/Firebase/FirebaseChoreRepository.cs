@@ -55,6 +55,27 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
         _ => new DailySchedule()
     };
 
+    public async Task<ISubscription> SubscribeToChores(string childId, Action<IReadOnlyList<Chore>> onUpdate)
+    {
+        var id = await interop.SubscribeToChores(childId, dtos =>
+        {
+            onUpdate(dtos.Select(ToChore).ToList());
+            return Task.CompletedTask;
+        });
+        return new FirebaseSubscription(id, interop);
+    }
+
+    public async Task<ISubscription> SubscribeToCompletions(string childId, DateTimeOffset date, Action<IReadOnlyList<ChoreCompletion>> onUpdate)
+    {
+        var dateStr = date.ToString("yyyy-MM-dd");
+        var id = await interop.SubscribeToCompletions(childId, dateStr, dtos =>
+        {
+            onUpdate(dtos.Select(ToCompletion).ToList());
+            return Task.CompletedTask;
+        });
+        return new FirebaseSubscription(id, interop);
+    }
+
     private static string ToScheduleType(ChoreSchedule schedule) => schedule switch
     {
         WeekdaysSchedule => "weekdays",

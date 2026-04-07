@@ -4,11 +4,14 @@ using DunIt.Core.Models;
 using DunIt.Core.Repositories;
 using DunIt.Core.Schedules;
 
-public class AdminViewModel
+public class AdminViewModel : IAsyncDisposable
 {
     private readonly IChoreRepository _choreRepository;
     private readonly IChildRepository _childRepository;
     private Dictionary<string, IReadOnlyList<Chore>> _choresByChildId = new();
+    private ISubscription _childrenSub = NullSubscription.Instance;
+
+    public event Action StateChanged = delegate { };
 
     public IReadOnlyList<Child> Children { get; private set; } = [];
 
@@ -23,8 +26,16 @@ public class AdminViewModel
 
     public async Task Initialize()
     {
+        await DisposeAsync();
+
         Children = await _childRepository.GetChildren();
         await RefreshChores();
+
+        _childrenSub = await _childRepository.Subscribe(updatedChildren =>
+        {
+            Children = updatedChildren;
+            StateChanged();
+        }) ?? NullSubscription.Instance;
     }
 
     public async Task AddChild(string name)
@@ -52,6 +63,12 @@ public class AdminViewModel
     {
         await _choreRepository.DeleteChore(chore.Id);
         await RefreshChoresFor(chore.AssignedTo);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _childrenSub.DisposeAsync();
+        _childrenSub = NullSubscription.Instance;
     }
 
     private async Task Refresh()

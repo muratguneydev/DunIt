@@ -1,6 +1,7 @@
 namespace DunIt.Web.Firebase;
 
 using DunIt.Core.Auth;
+using DunIt.Core.Firebase;
 
 public sealed class FirebaseAuthService(IFirebaseInterop interop) : IAuthService
 {

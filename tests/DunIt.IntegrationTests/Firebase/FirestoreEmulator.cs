@@ -31,7 +31,7 @@ public static class FirestoreEmulator
             $"{BaseUrl}/emulator/v1/projects/{ProjectId}/databases/(default)/documents");
     }
 
-    private static Task AddChild(string id, string name, string avatar) =>
+    public static Task AddChild(string id, string name, string avatar) =>
         SetDocument("children", id, new()
         {
             ["name"]   = StringField(name),
