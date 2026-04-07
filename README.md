@@ -105,6 +105,25 @@ On a test failure a screenshot is also saved to `test-results/screenshots/`.
 5. Runs `dotnet test` with `HEADED=1` and `PLAYWRIGHT_SLOW_MO=500`, so Chromium
    is visible and each action is slowed down by 500 ms.
 
+## Deploy to Firebase Hosting
+
+The app is hosted at **https://dunit-f0149.web.app**.
+
+Deployment requires a Firebase service account key. Set the path once:
+
+```bash
+export SERVICE_ACCOUNT_KEY="C:/Code/.firebase/dunit-f0149-firebase-adminsdk-fbsvc-9a6175d2a8.json"
+```
+
+Then build and deploy:
+
+```bash
+docker compose build deploy
+SERVICE_ACCOUNT_KEY="$SERVICE_ACCOUNT_KEY" docker compose run --rm deploy
+```
+
+The deploy image builds the Blazor WASM app and runs `firebase deploy --only hosting` in one step.
+
 ## Rebuild after code changes
 
 The web image bakes the published app into the container at build time, so after any source change you need to rebuild:

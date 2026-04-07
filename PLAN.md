@@ -58,7 +58,7 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 | 20 | ✅ | **FirebaseChoreRepository** | Implements `IChoreRepository` via JS interop |
 | 21 | ✅ | **FirebaseChildRepository** | Implements `IChildRepository` via JS interop |
 | 22 | ✅ | **Firebase Auth** | Simple login per family member |
-| 23 | ⬜ | **Real-time sync** | Firestore `onSnapshot` listeners for live updates |
+| 23 | ✅ | **Real-time sync** | Firestore `onSnapshot` listeners for live updates |
 
 ## Phase 7: End-to-End Tests (Playwright)
 | # | Status | Iteration | Description |
@@ -73,4 +73,4 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 |---|--------|-----------|-------------|
 | 31 | ⬜ | **Offline support** | Service worker caching for offline use |
 | 32 | ⬜ | **Push reminders** | Firebase Cloud Messaging for daily nudges |
-| 33 | ⬜ | **Deploy to Firebase Hosting** | `firebase deploy` |
+| 33 | ✅ | **Deploy to Firebase Hosting** | `firebase deploy` |
