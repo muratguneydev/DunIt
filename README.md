@@ -36,12 +36,14 @@ docker compose down
 
 ## Run end-to-end tests (Playwright)
 
-The E2E tests run against the live web container in a real Chromium browser inside Docker.
+The E2E tests run against the live web container and a local Firebase emulator in a real Chromium browser inside Docker.
 
 ```bash
-docker compose build web e2e   # first time, or when .csproj files change
-docker compose up web -d        # start the app
-docker compose run --rm e2e     # run E2E tests
+# First time, or when .csproj files change
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml build web e2e
+
+# Run E2E tests (starts emulator + web automatically, then runs tests)
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml run --rm e2e
 ```
 
 E2E test source is mounted from the host, so **no rebuild is needed after test changes** — only rebuild `e2e` when `.csproj` files change. Rebuild `web` whenever app source changes.
@@ -61,10 +63,10 @@ with the `PAUSE_BEFORE_TESTS` environment variable:
 
 ```bash
 # Wait 10 seconds instead
-PAUSE_BEFORE_TESTS=10 docker compose run --rm e2e
+PAUSE_BEFORE_TESTS=10 docker compose -f docker-compose.yml -f docker-compose.e2e.yml run --rm e2e
 
 # Skip the pause entirely (useful in CI)
-PAUSE_BEFORE_TESTS=0 docker compose run --rm e2e
+PAUSE_BEFORE_TESTS=0 docker compose -f docker-compose.yml -f docker-compose.e2e.yml run --rm e2e
 ```
 
 ### HTML report
@@ -147,8 +149,8 @@ export SERVICE_ACCOUNT_KEY="C:/Code/.firebase/dunit-f0149-firebase-adminsdk-fbsv
 Then build and deploy:
 
 ```bash
-docker compose build deploy
-SERVICE_ACCOUNT_KEY="$SERVICE_ACCOUNT_KEY" docker compose run --rm deploy
+docker compose --profile deploy build deploy
+SERVICE_ACCOUNT_KEY="$SERVICE_ACCOUNT_KEY" docker compose --profile deploy run --rm deploy
 ```
 
 The deploy image builds the Blazor WASM app and runs `firebase deploy --only hosting` in one step.

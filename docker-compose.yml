@@ -23,11 +23,12 @@ services:
       - ./tests/DunIt.UnitTests:/app/tests/DunIt.UnitTests
 
   deploy:
+    profiles: [deploy]
     build:
       context: .
       dockerfile: Dockerfile.deploy
     volumes:
-      - ${SERVICE_ACCOUNT_KEY}:/app/service-account.json:ro
+      - ${SERVICE_ACCOUNT_KEY:-./service-account-placeholder.json}:/app/service-account.json:ro
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json
 
