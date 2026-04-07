@@ -1,3 +1,4 @@
+using DunIt.Core.Auth;
 using DunIt.Core.Firebase;
 using DunIt.Core.Repositories;
 using DunIt.Core.ViewModels;
@@ -15,6 +16,7 @@ var firebaseConfig = FirebaseConfig.From(builder.Configuration.GetSection("Fireb
 
 builder.Services.AddSingleton(firebaseConfig);
 builder.Services.AddSingleton<IFirebaseInterop, JsFirebaseInterop>();
+builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
 builder.Services.AddSingleton<IChoreRepository, FirebaseChoreRepository>();
 builder.Services.AddSingleton<IChildRepository, FirebaseChildRepository>();
 builder.Services.AddTransient<DailyChoreViewModel>();

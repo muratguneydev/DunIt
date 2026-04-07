@@ -275,3 +275,72 @@ html, body {
 .admin-form button:active {
     background: #43a047;
 }
+
+/* ── Login page ───────────────────────────────────────────── */
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 32px;
+}
+
+.login-input {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.login-input:focus {
+    border-color: #4caf50;
+}
+
+.login-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin-top: 8px;
+    background: #4caf50;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.login-btn:disabled {
+    background: #a5d6a7;
+    cursor: not-allowed;
+}
+
+.login-error {
+    color: #d32f2f;
+    font-size: 0.9rem;
+    margin: 4px 0 8px;
+    text-align: center;
+}

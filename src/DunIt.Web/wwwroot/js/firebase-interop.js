@@ -8,8 +8,15 @@ import {
     Timestamp,
     onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import {
+    getAuth,
+    connectAuthEmulator,
+    signInWithEmailAndPassword,
+    signOut as firebaseSignOut
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 let db = null;
+let auth = null;
 const subscriptions = {};
 
 window.firebase_interop = {
@@ -17,10 +24,29 @@ window.firebase_interop = {
     init(config) {
         const app = initializeApp(config);
         db = getFirestore(app);
+        auth = getAuth(app);
         if (config.isUsingEmulator) {
             const [host, port] = config.emulatorHost.split(":");
             connectFirestoreEmulator(db, host, parseInt(port));
         }
+        if (config.authEmulatorHost) {
+            connectAuthEmulator(auth, `http://${config.authEmulatorHost}`, { disableWarnings: true });
+        }
+    },
+
+    // ── Auth ────────────────────────────────────────────────────────────────
+
+    async signIn(email, password) {
+        await signInWithEmailAndPassword(auth, email, password);
+    },
+
+    async signOut() {
+        await firebaseSignOut(auth);
+    },
+
+    async hasCurrentUser() {
+        await auth.authStateReady();
+        return auth.currentUser !== null;
     },
 
     // ── Children ────────────────────────────────────────────────────────────

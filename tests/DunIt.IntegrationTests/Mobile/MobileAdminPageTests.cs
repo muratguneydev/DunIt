@@ -8,8 +8,10 @@ using NUnit.Framework.Interfaces;
 
 public class MobileAdminPageTests : PageTest
 {
-    private static readonly string AdminUrl =
-        (Environment.GetEnvironmentVariable("PLAYWRIGHT_BASE_URL") ?? "http://localhost:5000") + "/admin";
+    private static readonly string BaseUrl =
+        Environment.GetEnvironmentVariable("PLAYWRIGHT_BASE_URL") ?? "http://localhost:5000";
+
+    private static readonly string AdminUrl = BaseUrl + "/admin";
 
     public override BrowserNewContextOptions ContextOptions() =>
         Playwright.Devices["iPhone 14"];
@@ -18,8 +20,10 @@ public class MobileAdminPageTests : PageTest
     public async Task SetUp()
     {
         await FirestoreEmulator.SeedDefaultData();
+        await FirebaseAuthEmulator.SeedTestUser();
         await PlaywrightTracing.Start(Context);
         Page.SetDefaultTimeout(15000);
+        await FirebaseAuthEmulator.SignIn(Page, BaseUrl);
     }
 
     [TearDown]

@@ -54,10 +54,10 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 ## Phase 6: Firebase Integration
 | # | Status | Iteration | Description |
 |---|--------|-----------|-------------|
-| 19 | ⬜ | **Firebase JS interop** | `firebase-interop.js` with Firestore CRUD |
-| 20 | ⬜ | **FirebaseChoreRepository** | Implements `IChoreRepository` via JS interop |
-| 21 | ⬜ | **FirebaseChildRepository** | Implements `IChildRepository` via JS interop |
-| 22 | ⬜ | **Firebase Auth** | Simple login per family member |
+| 19 | ✅ | **Firebase JS interop** | `firebase-interop.js` with Firestore CRUD |
+| 20 | ✅ | **FirebaseChoreRepository** | Implements `IChoreRepository` via JS interop |
+| 21 | ✅ | **FirebaseChildRepository** | Implements `IChildRepository` via JS interop |
+| 22 | 🔄 | **Firebase Auth** | Simple login per family member |
 | 23 | ⬜ | **Real-time sync** | Firestore `onSnapshot` listeners for live updates |
 
 ## Phase 7: End-to-End Tests (Playwright)

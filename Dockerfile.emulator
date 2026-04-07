@@ -13,7 +13,8 @@ COPY firestore.rules .
 
 ENV CI=true
 RUN firebase setup:emulators:firestore --config firebase.json || true
+RUN firebase setup:emulators:auth --config firebase.json || true
 
-EXPOSE 8080
+EXPOSE 8080 9099
 
-CMD ["firebase", "emulators:start", "--only", "firestore", "--project", "demo-dunit", "--config", "firebase.json"]
+CMD ["firebase", "emulators:start", "--only", "firestore,auth", "--project", "demo-dunit", "--config", "firebase.json"]

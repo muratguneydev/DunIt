@@ -17,6 +17,11 @@ public interface IFirebaseInterop
     Task<ChoreCompletionDto> CompleteChore(ChoreCompletionDto completion);
     Task UndoChore(string completionId);
 
+    // Auth
+    Task SignIn(string email, string password);
+    Task SignOut();
+    Task<bool> HasCurrentUser();
+
     // Real-time subscriptions — return a subscriptionId for later cancellation
     Task<string> SubscribeToChildren(Func<ChildDto[], Task> onUpdate);
     Task<string> SubscribeToChores(string childId, Func<ChoreDto[], Task> onUpdate);

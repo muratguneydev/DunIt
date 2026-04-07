@@ -23,3 +23,4 @@ services:
         condition: service_healthy
     environment:
       - FIRESTORE_EMULATOR_URL=http://emulator:8080
+      - AUTH_EMULATOR_URL=http://emulator:9099

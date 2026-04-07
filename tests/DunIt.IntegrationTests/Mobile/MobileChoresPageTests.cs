@@ -18,8 +18,10 @@ public class MobileChoresPageTests : PageTest
     public async Task SetUp()
     {
         await FirestoreEmulator.SeedDefaultData();
+        await FirebaseAuthEmulator.SeedTestUser();
         await PlaywrightTracing.Start(Context);
         Page.SetDefaultTimeout(15000);
+        await FirebaseAuthEmulator.SignIn(Page, BaseUrl);
     }
 
     [TearDown]

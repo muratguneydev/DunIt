@@ -75,6 +75,26 @@ public sealed class JsFirebaseInterop(IJSRuntime js, FirebaseConfig config) : IF
         await js.InvokeVoidAsync("firebase_interop.undoChore", completionId);
     }
 
+    // ── Auth ─────────────────────────────────────────────────────────────────
+
+    public async Task SignIn(string email, string password)
+    {
+        await EnsureInitialized();
+        await js.InvokeVoidAsync("firebase_interop.signIn", email, password);
+    }
+
+    public async Task SignOut()
+    {
+        await EnsureInitialized();
+        await js.InvokeVoidAsync("firebase_interop.signOut");
+    }
+
+    public async Task<bool> HasCurrentUser()
+    {
+        await EnsureInitialized();
+        return await js.InvokeAsync<bool>("firebase_interop.hasCurrentUser");
+    }
+
     // ── Real-time subscriptions ──────────────────────────────────────────────
 
     public async Task<string> SubscribeToChildren(Func<ChildDto[], Task> onUpdate)
