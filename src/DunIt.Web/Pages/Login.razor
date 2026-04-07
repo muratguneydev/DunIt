@@ -28,7 +28,7 @@
         busy = true;
         error = string.Empty;
         StateHasChanged();
-        var ok = await Auth.SignIn(email, password);
+        var ok = await Auth.SignIn(new Credentials(email, password));
         if (!ok)
             error = "Invalid email or password.";
         busy = false;

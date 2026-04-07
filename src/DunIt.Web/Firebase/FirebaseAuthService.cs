@@ -13,11 +13,11 @@ public sealed class FirebaseAuthService(IFirebaseInterop interop) : IAuthService
         AuthStateChanged();
     }
 
-    public async Task<bool> SignIn(string email, string password)
+    public async Task<bool> SignIn(Credentials credentials)
     {
         try
         {
-            await interop.SignIn(email, password);
+            await interop.SignIn(credentials);
             IsAuthenticated = true;
             AuthStateChanged();
             return true;

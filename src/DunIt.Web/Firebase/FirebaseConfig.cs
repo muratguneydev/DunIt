@@ -2,7 +2,7 @@ namespace DunIt.Web.Firebase;
 
 using Microsoft.Extensions.Configuration;
 
-public class FirebaseConfig
+public class FirebaseConfig : IFirebaseAppSettings, IFirebaseEmulatorSettings
 {
     private readonly bool _isUsingEmulator;
 

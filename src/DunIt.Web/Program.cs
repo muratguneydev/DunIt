@@ -14,7 +14,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 var firebaseConfig = FirebaseConfig.From(builder.Configuration.GetSection("Firebase"));
 
-builder.Services.AddSingleton(firebaseConfig);
+builder.Services.AddSingleton<IFirebaseAppSettings>(firebaseConfig);
+builder.Services.AddSingleton<IFirebaseEmulatorSettings>(firebaseConfig);
 builder.Services.AddSingleton<IFirebaseInterop, JsFirebaseInterop>();
 builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
 builder.Services.AddSingleton<IChoreRepository, FirebaseChoreRepository>();

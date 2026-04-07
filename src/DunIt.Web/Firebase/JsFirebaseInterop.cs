@@ -1,9 +1,13 @@
 namespace DunIt.Web.Firebase;
 
+using DunIt.Core.Auth;
 using DunIt.Core.Firebase;
 using Microsoft.JSInterop;
 
-public sealed class JsFirebaseInterop(IJSRuntime js, FirebaseConfig config) : IFirebaseInterop, IAsyncDisposable
+public sealed class JsFirebaseInterop(
+    IJSRuntime js,
+    IFirebaseAppSettings appSettings,
+    IFirebaseEmulatorSettings emulatorSettings) : IFirebaseInterop, IAsyncDisposable
 {
     private bool _initialized;
     private readonly Dictionary<string, IDisposable> _refs = new();
@@ -11,7 +15,18 @@ public sealed class JsFirebaseInterop(IJSRuntime js, FirebaseConfig config) : IF
     private async Task EnsureInitialized()
     {
         if (_initialized) return;
-        await js.InvokeVoidAsync("firebase_interop.init", config);
+        await js.InvokeVoidAsync("firebase_interop.init", new
+        {
+            appSettings.ApiKey,
+            appSettings.AuthDomain,
+            appSettings.ProjectId,
+            appSettings.StorageBucket,
+            appSettings.MessagingSenderId,
+            appSettings.AppId,
+            emulatorSettings.EmulatorHost,
+            emulatorSettings.AuthEmulatorHost,
+            emulatorSettings.IsUsingEmulator
+        });
         _initialized = true;
     }
 
@@ -77,10 +92,10 @@ public sealed class JsFirebaseInterop(IJSRuntime js, FirebaseConfig config) : IF
 
     // ── Auth ─────────────────────────────────────────────────────────────────
 
-    public async Task SignIn(string email, string password)
+    public async Task SignIn(Credentials credentials)
     {
         await EnsureInitialized();
-        await js.InvokeVoidAsync("firebase_interop.signIn", email, password);
+        await js.InvokeVoidAsync("firebase_interop.signIn", credentials.Email, credentials.Password);
     }
 
     public async Task SignOut()
