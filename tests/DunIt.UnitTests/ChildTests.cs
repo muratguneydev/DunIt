@@ -14,6 +14,26 @@ public class ChildTests
         var child = new Child(id, name);
 
         // Assert
-        child.Avatar.ShouldBe("🧒");
+        child.ShouldBe(new Child(id, name, Avatar: "🧒"));
+    }
+
+    [Test, AutoData]
+    public void ShouldHaveEmptyFirebaseUid_WhenFirebaseUidNotProvided(ChildId id, string name)
+    {
+        // Act
+        var child = new Child(id, name);
+
+        // Assert
+        child.ShouldBe(new Child(id, name, FirebaseUid: default));
+    }
+
+    [Test, AutoData]
+    public void ShouldIncludeFirebaseUid_WhenChildHasLinkedAccount(ChildId id, string name, FirebaseUid firebaseUid)
+    {
+        // Act
+        var child = new Child(id, name, FirebaseUid: firebaseUid);
+
+        // Assert
+        child.ShouldBe(new Child(id, name, FirebaseUid: firebaseUid));
     }
 }

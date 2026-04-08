@@ -18,7 +18,8 @@ public class MobileChoresPageTests : PageTest
     public async Task SetUp()
     {
         await FirestoreEmulator.SeedDefaultData();
-        await FirebaseAuthEmulator.SeedTestUser();
+        var parentUid = await FirebaseAuthEmulator.SeedTestUser();
+        await FirestoreEmulator.AddParent(parentUid);
         await PlaywrightTracing.Start(Context);
         Page.SetDefaultTimeout(15000);
         await FirebaseAuthEmulator.SignIn(Page, BaseUrl);

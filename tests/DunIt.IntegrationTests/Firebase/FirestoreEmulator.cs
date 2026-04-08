@@ -31,11 +31,15 @@ public static class FirestoreEmulator
             $"{BaseUrl}/emulator/v1/projects/{ProjectId}/databases/(default)/documents");
     }
 
-    public static Task AddChild(string id, string name, string avatar) =>
+    public static Task AddParent(string uid) =>
+        SetDocument("parents", uid, new());
+
+    public static Task AddChild(string id, string name, string avatar, string firebaseUid = "") =>
         SetDocument("children", id, new()
         {
-            ["name"]   = StringField(name),
-            ["avatar"] = StringField(avatar)
+            ["name"]       = StringField(name),
+            ["avatar"]     = StringField(avatar),
+            ["firebaseUid"] = StringField(firebaseUid)
         });
 
     private static Task AddChore(string id, string title, string assignedTo, string scheduleType) =>

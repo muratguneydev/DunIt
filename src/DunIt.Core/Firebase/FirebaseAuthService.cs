@@ -1,16 +1,22 @@
-namespace DunIt.Web.Firebase;
+namespace DunIt.Core.Firebase;
 
 using DunIt.Core.Auth;
-using DunIt.Core.Firebase;
+using DunIt.Core.Models;
 
 public sealed class FirebaseAuthService(IFirebaseInterop interop) : IAuthService
 {
     public bool IsAuthenticated { get; private set; }
+    public bool IsParent { get; private set; }
     public event Action AuthStateChanged = delegate { };
 
     public async Task RestoreSession()
     {
         IsAuthenticated = await interop.HasCurrentUser();
+        if (IsAuthenticated)
+        {
+            var uid = await interop.GetCurrentUserId();
+            IsParent = await interop.IsParent(uid);
+        }
         AuthStateChanged();
     }
 
@@ -19,13 +25,16 @@ public sealed class FirebaseAuthService(IFirebaseInterop interop) : IAuthService
         try
         {
             await interop.SignIn(credentials);
+            var uid = await interop.GetCurrentUserId();
             IsAuthenticated = true;
+            IsParent = await interop.IsParent(uid);
             AuthStateChanged();
             return true;
         }
         catch
         {
             IsAuthenticated = false;
+            IsParent = false;
             AuthStateChanged();
             return false;
         }
@@ -35,6 +44,7 @@ public sealed class FirebaseAuthService(IFirebaseInterop interop) : IAuthService
     {
         await interop.SignOut();
         IsAuthenticated = false;
+        IsParent = false;
         AuthStateChanged();
     }
 }

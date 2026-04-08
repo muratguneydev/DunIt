@@ -54,7 +54,10 @@
     }
 
     <div class="nav-link-row">
-        <a href="/admin">⚙ Manage chores</a>
+        @if (Auth.IsParent)
+        {
+            <a href="/admin">⚙ Manage chores</a>
+        }
         <button class="sign-out-btn" @onclick="Auth.SignOut">Sign out</button>
     </div>
 </div>

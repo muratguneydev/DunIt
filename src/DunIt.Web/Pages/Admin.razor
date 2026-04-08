@@ -62,8 +62,15 @@
     private string _newChoreTitle = "";
     private string _newChoreSchedule = "daily";
 
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+
     protected override async Task OnInitializedAsync()
     {
+        if (!Auth.IsParent)
+        {
+            Nav.NavigateTo("/");
+            return;
+        }
         ViewModel.StateChanged += OnStateChanged;
         await ViewModel.Initialize();
     }

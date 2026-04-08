@@ -3,7 +3,7 @@ import {
     getFirestore,
     connectFirestoreEmulator,
     collection, doc,
-    getDocs, setDoc, deleteDoc,
+    getDocs, getDoc, setDoc, deleteDoc,
     query, where,
     Timestamp,
     onSnapshot
@@ -49,15 +49,35 @@ window.firebase_interop = {
         return auth.currentUser !== null;
     },
 
+    async getCurrentUserId() {
+        await auth.authStateReady();
+        return auth.currentUser?.uid ?? null;
+    },
+
+    async isParent(uid) {
+        if (!uid) return false;
+        const snap = await getDoc(doc(db, "parents", uid));
+        return snap.exists();
+    },
+
     // ── Children ────────────────────────────────────────────────────────────
 
     async getChildren() {
         const snap = await getDocs(collection(db, "children"));
-        return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        return snap.docs.map(d => ({
+            id: d.id,
+            name: d.data().name,
+            avatar: d.data().avatar,
+            firebaseUid: d.data().firebaseUid ?? ""
+        }));
     },
 
     async addChild(child) {
-        await setDoc(doc(db, "children", child.id), { name: child.name, avatar: child.avatar });
+        await setDoc(doc(db, "children", child.id), {
+            name: child.name,
+            avatar: child.avatar,
+            firebaseUid: child.firebaseUid ?? ""
+        });
         return child;
     },
 
@@ -124,7 +144,12 @@ window.firebase_interop = {
 
     subscribeToChildren(subscriptionId, dotNetRef) {
         const unsub = onSnapshot(collection(db, "children"), snap => {
-            const children = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            const children = snap.docs.map(d => ({
+                id: d.id,
+                name: d.data().name,
+                avatar: d.data().avatar,
+                firebaseUid: d.data().firebaseUid ?? ""
+            }));
             dotNetRef.invokeMethodAsync("OnDataChanged", children);
         });
         subscriptions[subscriptionId] = unsub;

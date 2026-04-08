@@ -1,6 +1,7 @@
 namespace DunIt.Core.Firebase;
 
 using DunIt.Core.Auth;
+using DunIt.Core.Models;
 
 public interface IFirebaseInterop
 {
@@ -23,6 +24,8 @@ public interface IFirebaseInterop
     Task SignIn(Credentials credentials);
     Task SignOut();
     Task<bool> HasCurrentUser();
+    Task<FirebaseUid> GetCurrentUserId();
+    Task<bool> IsParent(FirebaseUid uid);
 
     // Real-time subscriptions — return a subscriptionId for later cancellation
     Task<string> SubscribeToChildren(Func<ChildDto[], Task> onUpdate);

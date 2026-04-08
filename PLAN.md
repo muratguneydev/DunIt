@@ -74,3 +74,8 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 | 31 | ⬜ | **Offline support** | Service worker caching for offline use |
 | 32 | ⬜ | **Push reminders** | Firebase Cloud Messaging for daily nudges |
 | 33 | ✅ | **Deploy to Firebase Hosting** | `firebase deploy` |
+
+## Phase 9: Role-based Access
+| # | Status | Iteration | Description |
+|---|--------|-----------|-------------|
+| 35 | ✅ | **Parent vs child roles** | Explicit `parents` Firestore collection; guard admin page — defaults to child if UID not found |

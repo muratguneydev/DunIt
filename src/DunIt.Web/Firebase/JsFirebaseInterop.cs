@@ -2,6 +2,7 @@ namespace DunIt.Web.Firebase;
 
 using DunIt.Core.Auth;
 using DunIt.Core.Firebase;
+using DunIt.Core.Models;
 using Microsoft.JSInterop;
 
 public sealed class JsFirebaseInterop(
@@ -108,6 +109,18 @@ public sealed class JsFirebaseInterop(
     {
         await EnsureInitialized();
         return await js.InvokeAsync<bool>("firebase_interop.hasCurrentUser");
+    }
+
+    public async Task<FirebaseUid> GetCurrentUserId()
+    {
+        await EnsureInitialized();
+        return new FirebaseUid(await js.InvokeAsync<string?>("firebase_interop.getCurrentUserId") ?? "");
+    }
+
+    public async Task<bool> IsParent(FirebaseUid uid)
+    {
+        await EnsureInitialized();
+        return await js.InvokeAsync<bool>("firebase_interop.isParent", uid.Value);
     }
 
     // ── Real-time subscriptions ──────────────────────────────────────────────

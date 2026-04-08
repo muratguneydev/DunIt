@@ -18,14 +18,14 @@ public class FirebaseChildRepositoryTests
     {
         // Arrange
         firebaseInteropSpy.Setup(f => f.AddChild(It.IsAny<ChildDto>()))
-            .ReturnsAsync(new ChildDto(child.Id, child.Name, child.Avatar));
+            .ReturnsAsync(new ChildDto(child.Id, child.Name, child.Avatar, child.FirebaseUid.Value));
 
         // Act
         var result = await sut.AddChild(child);
 
         // Assert
         firebaseInteropSpy.Verify(f => f.AddChild(
-            It.Is<ChildDto>(d => d.Id == child.Id.Value && d.Name == child.Name && d.Avatar == child.Avatar)),
+            It.Is<ChildDto>(d => d.Id == child.Id.Value && d.Name == child.Name && d.Avatar == child.Avatar && d.FirebaseUid == child.FirebaseUid.Value)),
             Times.Once);
         result.ShouldBe(child);
     }
@@ -51,8 +51,8 @@ public class FirebaseChildRepositoryTests
         // Arrange
         firebaseInteropStub.Setup(f => f.GetChildren()).ReturnsAsync(
         [
-            new ChildDto("child-1", "Alice", "👧"),
-            new ChildDto("child-2", "Bob", "👦")
+            new ChildDto("child-1", "Alice", "👧", "uid-alice"),
+            new ChildDto("child-2", "Bob",   "👦", "")
         ]);
 
         // Act
@@ -60,8 +60,7 @@ public class FirebaseChildRepositoryTests
 
         // Assert
         result.Count.ShouldBe(2);
-        result[0].Id.Value.ShouldBe("child-1");
-        result[0].Name.ShouldBe("Alice");
-        result[1].Id.Value.ShouldBe("child-2");
+        result[0].ShouldBe(new Child(new ChildId("child-1"), "Alice", "👧", new FirebaseUid("uid-alice")));
+        result[1].ShouldBe(new Child(new ChildId("child-2"), "Bob",   "👦", new FirebaseUid("")));
     }
 }

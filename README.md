@@ -131,6 +131,13 @@ sign in again unless they explicitly sign out.
 - **Children** see their own chore list for today and can tap to mark chores done or undo them.
 - **The parent** uses the Admin page (linked from the home page) to add/remove chores and manage children.
 
+Roles are enforced via an explicit `parents` Firestore collection. When a user signs in, the app checks whether their Firebase UID exists as a document in `parents`. If it does, they are a parent; otherwise they are treated as a child. This means the safe default is no admin access — a misconfigured or unlinked account can never accidentally gain parent privileges.
+
+To grant parent access to a user:
+
+1. Find their Firebase UID in the [Firebase Console](https://console.firebase.google.com) → **Authentication** → **Users**
+2. In **Firestore** → **Data**, open the `parents` collection and add a document with that UID as the document ID (no fields required)
+
 ### Real-time sync
 
 All devices update live via Firestore `onSnapshot` listeners — when a child marks
