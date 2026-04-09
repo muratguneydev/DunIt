@@ -113,18 +113,17 @@ The live app is at **https://dunit-f0149.web.app**.
 
 ### User accounts
 
-The app uses Firebase Authentication with email and password. There is no
-self-registration — accounts are created manually in the Firebase Console:
+The app uses Firebase Authentication with Google sign-in. There is no
+self-registration — access is controlled by the `parents` Firestore collection
+and the child records in Firestore.
 
-1. Go to [Firebase Console](https://console.firebase.google.com) → **dunit-f0149** → **Authentication** → **Users**
-2. Click **"Add user"** and enter an email and password for each family member
-3. Up to 4 accounts: 1 parent + up to 3 children
+Family members sign in with a Google account. Up to 4 accounts: 1 parent + up to 3 children.
 
 ### Signing in
 
-Each family member opens the app, enters their email and password, and lands on
-their daily chore view. The session persists across page refreshes — no need to
-sign in again unless they explicitly sign out.
+Each family member opens the app, taps **Sign in with Google**, and completes
+the Google OAuth flow. They land on their daily chore view. The session persists
+across page refreshes — no need to sign in again unless they explicitly sign out.
 
 ### Parent vs child
 
@@ -135,8 +134,9 @@ Roles are enforced via an explicit `parents` Firestore collection. When a user s
 
 To grant parent access to a user:
 
-1. Find their Firebase UID in the [Firebase Console](https://console.firebase.google.com) → **Authentication** → **Users**
-2. In **Firestore** → **Data**, open the `parents` collection and add a document with that UID as the document ID (no fields required)
+1. Ask them to sign in once with Google so their Firebase account is created
+2. Find their Firebase UID in the [Firebase Console](https://console.firebase.google.com) → **Authentication** → **Users**
+3. In **Firestore** → **Data**, open the `parents` collection and add a document with that UID as the document ID (no fields required)
 
 ### Real-time sync
 
