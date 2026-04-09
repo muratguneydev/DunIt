@@ -1,6 +1,5 @@
 namespace DunIt.Core.Firebase;
 
-using DunIt.Core.Auth;
 using DunIt.Core.Models;
 
 public interface IFirebaseInterop
@@ -21,7 +20,7 @@ public interface IFirebaseInterop
     Task UndoChore(string completionId);
 
     // Auth
-    Task SignIn(Credentials credentials);
+    Task SignIn();
     Task SignOut();
     Task<bool> HasCurrentUser();
     Task<FirebaseUid> GetCurrentUserId();

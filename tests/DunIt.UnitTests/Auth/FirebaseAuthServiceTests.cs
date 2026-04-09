@@ -1,7 +1,6 @@
 namespace DunIt.UnitTests.Auth;
 
 using AutoFixture.NUnit4;
-using DunIt.Core.Auth;
 using DunIt.Core.Firebase;
 using DunIt.Core.Models;
 using DunIt.Testing;
@@ -70,7 +69,6 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldBeAuthenticated_WhenSignInSucceeds(
-        Credentials credentials,
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
@@ -80,7 +78,7 @@ public class FirebaseAuthServiceTests
         firebaseInteropStub.Setup(f => f.IsParent(uid)).ReturnsAsync(false);
 
         // Act
-        await sut.SignIn(credentials);
+        await sut.SignIn();
 
         // Assert
         sut.IsAuthenticated.ShouldBeTrue();
@@ -88,7 +86,6 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldReturnTrue_WhenSignInSucceeds(
-        Credentials credentials,
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
@@ -98,7 +95,7 @@ public class FirebaseAuthServiceTests
         firebaseInteropStub.Setup(f => f.IsParent(uid)).ReturnsAsync(false);
 
         // Act
-        var result = await sut.SignIn(credentials);
+        var result = await sut.SignIn();
 
         // Assert
         result.ShouldBeTrue();
@@ -106,15 +103,14 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldNotBeAuthenticated_WhenSignInFails(
-        Credentials credentials,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
     {
         // Arrange
-        firebaseInteropStub.Setup(f => f.SignIn(credentials)).ThrowsAsync(new Exception("auth/wrong-password"));
+        firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(new Exception("auth/popup-closed-by-user"));
 
         // Act
-        await sut.SignIn(credentials);
+        await sut.SignIn();
 
         // Assert
         sut.IsAuthenticated.ShouldBeFalse();
@@ -122,15 +118,14 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldReturnFalse_WhenSignInFails(
-        Credentials credentials,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
     {
         // Arrange
-        firebaseInteropStub.Setup(f => f.SignIn(credentials)).ThrowsAsync(new Exception("auth/wrong-password"));
+        firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(new Exception("auth/popup-closed-by-user"));
 
         // Act
-        var result = await sut.SignIn(credentials);
+        var result = await sut.SignIn();
 
         // Assert
         result.ShouldBeFalse();
@@ -138,7 +133,6 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldFireAuthStateChanged_WhenSignInSucceeds(
-        Credentials credentials,
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
@@ -150,7 +144,7 @@ public class FirebaseAuthServiceTests
         sut.AuthStateChanged += () => fired = true;
 
         // Act
-        await sut.SignIn(credentials);
+        await sut.SignIn();
 
         // Assert
         fired.ShouldBeTrue();
@@ -158,17 +152,16 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldFireAuthStateChanged_WhenSignInFails(
-        Credentials credentials,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
     {
         // Arrange
-        firebaseInteropStub.Setup(f => f.SignIn(credentials)).ThrowsAsync(new Exception("auth/wrong-password"));
+        firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(new Exception("auth/popup-closed-by-user"));
         var fired = false;
         sut.AuthStateChanged += () => fired = true;
 
         // Act
-        await sut.SignIn(credentials);
+        await sut.SignIn();
 
         // Assert
         fired.ShouldBeTrue();
@@ -259,7 +252,6 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldBeParent_WhenSignedInAndUidExistsInParentsCollection(
-        Credentials credentials,
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
@@ -269,7 +261,7 @@ public class FirebaseAuthServiceTests
         firebaseInteropStub.Setup(f => f.IsParent(uid)).ReturnsAsync(true);
 
         // Act
-        await sut.SignIn(credentials);
+        await sut.SignIn();
 
         // Assert
         sut.IsParent.ShouldBeTrue();
@@ -277,7 +269,6 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldNotBeParent_WhenSignedInAndUidNotInParentsCollection(
-        Credentials credentials,
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
@@ -287,7 +278,7 @@ public class FirebaseAuthServiceTests
         firebaseInteropStub.Setup(f => f.IsParent(uid)).ReturnsAsync(false);
 
         // Act
-        await sut.SignIn(credentials);
+        await sut.SignIn();
 
         // Assert
         sut.IsParent.ShouldBeFalse();
@@ -295,15 +286,14 @@ public class FirebaseAuthServiceTests
 
     [Test, AutoMoqData]
     public async Task ShouldNotBeParent_WhenSignInFails(
-        Credentials credentials,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
         FirebaseAuthService sut)
     {
         // Arrange
-        firebaseInteropStub.Setup(f => f.SignIn(credentials)).ThrowsAsync(new Exception("auth/wrong-password"));
+        firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(new Exception("auth/popup-closed-by-user"));
 
         // Act
-        await sut.SignIn(credentials);
+        await sut.SignIn();
 
         // Assert
         sut.IsParent.ShouldBeFalse();

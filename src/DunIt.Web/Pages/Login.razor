@@ -3,23 +3,15 @@
 <div class="login-page">
     <div class="login-card">
         <h1 class="login-title">DunIt</h1>
-        <form @onsubmit="HandleSignIn" @onsubmit:preventDefault>
-            <input class="login-input" type="email" @bind="email"
-                   placeholder="Email" autocomplete="username" />
-            <input class="login-input" type="password" @bind="password"
-                   placeholder="Password" autocomplete="current-password" />
-            @if (error.Length > 0)
-            {
-                <p class="login-error">@error</p>
-            }
-            <button class="login-btn" type="submit" disabled="@busy">Sign in</button>
-        </form>
+        @if (error.Length > 0)
+        {
+            <p class="login-error">@error</p>
+        }
+        <button class="login-btn" @onclick="HandleSignIn" disabled="@busy">Sign in with Google</button>
     </div>
 </div>
 
 @code {
-    private string email = string.Empty;
-    private string password = string.Empty;
     private string error = string.Empty;
     private bool busy;
 
@@ -28,9 +20,9 @@
         busy = true;
         error = string.Empty;
         StateHasChanged();
-        var ok = await Auth.SignIn(new Credentials(email, password));
+        var ok = await Auth.SignIn();
         if (!ok)
-            error = "Invalid email or password.";
+            error = "Sign-in failed or was cancelled.";
         busy = false;
     }
 }

@@ -30,18 +30,22 @@ public static class FirebaseAuthEmulator
     public static async Task SignIn(IPage page, string baseUrl)
     {
         await page.GotoAsync(baseUrl);
-        await page.Locator("input[type=email]").FillAsync(TestEmail);
-        await page.Locator("input[type=password]").FillAsync(TestPassword);
-        await page.Locator("button[type=submit]").ClickAsync();
+        await page.WaitForSelectorAsync(".login-btn");
+        await page.EvaluateAsync(
+            "([email, password]) => window.firebase_interop.testSignIn(email, password)",
+            new[] { TestEmail, TestPassword });
+        await page.ReloadAsync();
         await page.WaitForSelectorAsync(".child-selector, .empty-state");
     }
 
     public static async Task SignInAsChild(IPage page, string baseUrl)
     {
         await page.GotoAsync(baseUrl);
-        await page.Locator("input[type=email]").FillAsync(ChildEmail);
-        await page.Locator("input[type=password]").FillAsync(ChildPassword);
-        await page.Locator("button[type=submit]").ClickAsync();
+        await page.WaitForSelectorAsync(".login-btn");
+        await page.EvaluateAsync(
+            "([email, password]) => window.firebase_interop.testSignIn(email, password)",
+            new[] { ChildEmail, ChildPassword });
+        await page.ReloadAsync();
         await page.WaitForSelectorAsync(".child-selector, .empty-state");
     }
 

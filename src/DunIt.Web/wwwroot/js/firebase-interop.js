@@ -11,6 +11,8 @@ import {
 import {
     getAuth,
     connectAuthEmulator,
+    GoogleAuthProvider,
+    signInWithPopup,
     signInWithEmailAndPassword,
     signOut as firebaseSignOut
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
@@ -36,7 +38,12 @@ window.firebase_interop = {
 
     // ── Auth ────────────────────────────────────────────────────────────────
 
-    async signIn(email, password) {
+    async signIn() {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+    },
+
+    async testSignIn(email, password) {
         await signInWithEmailAndPassword(auth, email, password);
     },
 

@@ -20,11 +20,11 @@ public sealed class FirebaseAuthService(IFirebaseInterop interop) : IAuthService
         AuthStateChanged();
     }
 
-    public async Task<bool> SignIn(Credentials credentials)
+    public async Task<bool> SignIn()
     {
         try
         {
-            await interop.SignIn(credentials);
+            await interop.SignIn();
             var uid = await interop.GetCurrentUserId();
             IsAuthenticated = true;
             IsParent = await interop.IsParent(uid);

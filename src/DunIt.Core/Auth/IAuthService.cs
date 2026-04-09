@@ -6,6 +6,6 @@ public interface IAuthService
     bool IsParent { get; }
     event Action AuthStateChanged;
     Task RestoreSession();
-    Task<bool> SignIn(Credentials credentials);
+    Task<bool> SignIn();
     Task SignOut();
 }

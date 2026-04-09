@@ -1,6 +1,5 @@
 namespace DunIt.Web.Firebase;
 
-using DunIt.Core.Auth;
 using DunIt.Core.Firebase;
 using DunIt.Core.Models;
 using Microsoft.JSInterop;
@@ -93,10 +92,10 @@ public sealed class JsFirebaseInterop(
 
     // ── Auth ─────────────────────────────────────────────────────────────────
 
-    public async Task SignIn(Credentials credentials)
+    public async Task SignIn()
     {
         await EnsureInitialized();
-        await js.InvokeVoidAsync("firebase_interop.signIn", credentials.Email, credentials.Password);
+        await js.InvokeVoidAsync("firebase_interop.signIn");
     }
 
     public async Task SignOut()
