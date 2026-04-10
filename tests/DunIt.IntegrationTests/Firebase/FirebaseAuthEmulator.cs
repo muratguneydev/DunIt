@@ -46,7 +46,7 @@ public static class FirebaseAuthEmulator
             "([email, password]) => window.firebase_interop.testSignIn(email, password)",
             new[] { ChildEmail, ChildPassword });
         await page.ReloadAsync();
-        await page.WaitForSelectorAsync(".child-selector, .empty-state");
+        await page.WaitForSelectorAsync(".sign-out-btn");
     }
 
     private static async Task ClearAll() =>

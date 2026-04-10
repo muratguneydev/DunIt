@@ -16,8 +16,9 @@ public class DailyChoreViewModel : IAsyncDisposable
 
     public event Action StateChanged = delegate { };
 
+    public bool IsChildView { get; private set; }
     public IReadOnlyList<Child> Children { get; private set; } = [];
-    public Child? SelectedChild { get; private set; }
+    public Child SelectedChild { get; private set; } = Child.Empty;
     public IReadOnlyList<Chore> UncompletedChores { get; private set; } = [];
     public IReadOnlyList<CompletedChore> CompletedChores { get; private set; } = [];
     public int TotalCount => UncompletedChores.Count + CompletedChores.Count;
@@ -31,6 +32,7 @@ public class DailyChoreViewModel : IAsyncDisposable
 
     public async Task Initialize()
     {
+        IsChildView = false;
         await DisposeAsync();
 
         Children = await _childRepository.GetChildren();
@@ -44,6 +46,17 @@ public class DailyChoreViewModel : IAsyncDisposable
         }) ?? NullSubscription.Instance;
     }
 
+    public async Task InitializeAsChild(FirebaseUid childUid)
+    {
+        IsChildView = true;
+        await DisposeAsync();
+
+        Children = await _childRepository.GetChildren();
+        var myChild = Children.FirstOrDefault(c => c.FirebaseUid == childUid);
+        if (myChild != null)
+            await SelectChild(myChild);
+    }
+
     public async Task SelectChild(Child child)
     {
         SelectedChild = child;
@@ -53,7 +66,7 @@ public class DailyChoreViewModel : IAsyncDisposable
 
     public async Task Complete(Chore chore)
     {
-        await _choreRepository.CompleteChore(chore.Id, SelectedChild!.Id, DateTimeOffset.Now);
+        await _choreRepository.CompleteChore(chore.Id, SelectedChild.Id, DateTimeOffset.Now);
         await RefreshChores();
     }
 
@@ -78,7 +91,7 @@ public class DailyChoreViewModel : IAsyncDisposable
         await _choresSub.DisposeAsync();
         await _completionsSub.DisposeAsync();
 
-        var childId = SelectedChild!.Id;
+        var childId = SelectedChild.Id;
         var today = DateTimeOffset.Now;
 
         _choresSub = await _choreRepository.SubscribeToChores(childId, updatedChores =>
@@ -99,7 +112,7 @@ public class DailyChoreViewModel : IAsyncDisposable
     private async Task RefreshChores()
     {
         var today = DateTimeOffset.Now;
-        _cachedChores = await _choreRepository.GetChoresForChild(SelectedChild!.Id);
+        _cachedChores = await _choreRepository.GetChoresForChild(SelectedChild.Id);
         _cachedCompletions = await _choreRepository.GetCompletionsFor(SelectedChild.Id, today);
         UpdateChoreView();
     }

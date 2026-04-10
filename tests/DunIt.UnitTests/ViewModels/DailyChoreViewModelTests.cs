@@ -254,6 +254,61 @@ public class DailyChoreViewModelTests
         sut.CompletedChores[0].Chore.ShouldBe(chore);
     }
 
+    [Test, AutoMoqData]
+    public async Task ShouldAutoSelectMatchingChild_WhenInitializedAsChild(
+        Child child1, Child child2,
+        [Frozen] Mock<IChoreRepository> choreRepoDummy,
+        [Frozen] Mock<IChildRepository> childRepoStub,
+        DailyChoreViewModel sut)
+    {
+        // Arrange
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child1, child2]);
+        choreRepoDummy.Setup(r => r.GetChoresForChild(child1.Id)).ReturnsAsync([]);
+        choreRepoDummy.Setup(r => r.GetCompletionsFor(child1.Id, It.IsAny<DateTimeOffset>())).ReturnsAsync([]);
+
+        // Act
+        await sut.InitializeAsChild(child1.FirebaseUid);
+
+        // Assert
+        sut.SelectedChild.ShouldBe(child1);
+        sut.IsChildView.ShouldBeTrue();
+    }
+
+    [Test, AutoMoqData]
+    public async Task ShouldNotBeChildView_WhenInitializedAsParent(
+        [Frozen] Mock<IChoreRepository> choreRepoDummy,
+        [Frozen] Mock<IChildRepository> childRepoStub,
+        DailyChoreViewModel sut)
+    {
+        // Arrange
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([]);
+
+        // Act
+        await sut.Initialize();
+
+        // Assert
+        sut.IsChildView.ShouldBeFalse();
+    }
+
+    [Test, AutoMoqData]
+    public async Task ShouldShowOnlyOwnChores_WhenInitializedAsChild(
+        Child child1, Child child2, Chore chore,
+        [Frozen] Mock<IChoreRepository> choreRepoStub,
+        [Frozen] Mock<IChildRepository> childRepoStub,
+        DailyChoreViewModel sut)
+    {
+        // Arrange
+        childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child1, child2]);
+        choreRepoStub.Setup(r => r.GetChoresForChild(child1.Id)).ReturnsAsync([chore]);
+        choreRepoStub.Setup(r => r.GetCompletionsFor(child1.Id, It.IsAny<DateTimeOffset>())).ReturnsAsync([]);
+
+        // Act
+        await sut.InitializeAsChild(child1.FirebaseUid);
+
+        // Assert
+        sut.UncompletedChores.ShouldBe([chore]);
+    }
+
     private static DateTimeOffset WithinSeconds(DateTimeOffset reference, int seconds) =>
         It.Is<DateTimeOffset>(dt => Math.Abs((dt - reference).TotalSeconds) < seconds);
 }

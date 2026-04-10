@@ -8,7 +8,7 @@ using Moq;
 using NUnit.Framework;
 using Shouldly;
 
-public class FirebaseAuthServiceTests
+public class UserContextTests
 {
     // ── RestoreSession ───────────────────────────────────────────────────────
 
@@ -16,7 +16,7 @@ public class FirebaseAuthServiceTests
     public async Task ShouldBeAuthenticated_WhenSessionExists(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.HasCurrentUser()).ReturnsAsync(true);
@@ -33,7 +33,7 @@ public class FirebaseAuthServiceTests
     [Test, AutoMoqData]
     public async Task ShouldNotBeAuthenticated_WhenNoSessionExists(
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.HasCurrentUser()).ReturnsAsync(false);
@@ -49,14 +49,14 @@ public class FirebaseAuthServiceTests
     public async Task ShouldFireAuthStateChanged_WhenSessionRestored(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.HasCurrentUser()).ReturnsAsync(true);
         firebaseInteropStub.Setup(f => f.GetCurrentUserId()).ReturnsAsync(uid);
         firebaseInteropStub.Setup(f => f.IsParent(uid)).ReturnsAsync(false);
         var fired = false;
-        sut.AuthStateChanged += () => fired = true;
+        sut.Changed += () => fired = true;
 
         // Act
         await sut.RestoreSession();
@@ -71,7 +71,7 @@ public class FirebaseAuthServiceTests
     public async Task ShouldBeAuthenticated_WhenSignInSucceeds(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.GetCurrentUserId()).ReturnsAsync(uid);
@@ -88,7 +88,7 @@ public class FirebaseAuthServiceTests
     public async Task ShouldReturnTrue_WhenSignInSucceeds(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.GetCurrentUserId()).ReturnsAsync(uid);
@@ -104,7 +104,7 @@ public class FirebaseAuthServiceTests
     [Test, AutoMoqData]
     public async Task ShouldNotBeAuthenticated_WhenSignInFails(
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(new Exception("auth/popup-closed-by-user"));
@@ -119,7 +119,7 @@ public class FirebaseAuthServiceTests
     [Test, AutoMoqData]
     public async Task ShouldReturnFalse_WhenSignInFails(
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(new Exception("auth/popup-closed-by-user"));
@@ -135,13 +135,13 @@ public class FirebaseAuthServiceTests
     public async Task ShouldFireAuthStateChanged_WhenSignInSucceeds(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.GetCurrentUserId()).ReturnsAsync(uid);
         firebaseInteropStub.Setup(f => f.IsParent(uid)).ReturnsAsync(false);
         var fired = false;
-        sut.AuthStateChanged += () => fired = true;
+        sut.Changed += () => fired = true;
 
         // Act
         await sut.SignIn();
@@ -153,12 +153,12 @@ public class FirebaseAuthServiceTests
     [Test, AutoMoqData]
     public async Task ShouldFireAuthStateChanged_WhenSignInFails(
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(new Exception("auth/popup-closed-by-user"));
         var fired = false;
-        sut.AuthStateChanged += () => fired = true;
+        sut.Changed += () => fired = true;
 
         // Act
         await sut.SignIn();
@@ -172,7 +172,7 @@ public class FirebaseAuthServiceTests
     [Test, AutoMoqData]
     public async Task ShouldNotBeAuthenticated_WhenSignedOut(
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Act
         await sut.SignOut();
@@ -184,11 +184,11 @@ public class FirebaseAuthServiceTests
     [Test, AutoMoqData]
     public async Task ShouldFireAuthStateChanged_WhenSignedOut(
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         var fired = false;
-        sut.AuthStateChanged += () => fired = true;
+        sut.Changed += () => fired = true;
 
         // Act
         await sut.SignOut();
@@ -203,7 +203,7 @@ public class FirebaseAuthServiceTests
     public async Task ShouldBeParent_WhenUidExistsInParentsCollection(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.HasCurrentUser()).ReturnsAsync(true);
@@ -221,7 +221,7 @@ public class FirebaseAuthServiceTests
     public async Task ShouldNotBeParent_WhenUidNotInParentsCollection(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.HasCurrentUser()).ReturnsAsync(true);
@@ -238,7 +238,7 @@ public class FirebaseAuthServiceTests
     [Test, AutoMoqData]
     public async Task ShouldNotBeParent_WhenNotAuthenticated(
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.HasCurrentUser()).ReturnsAsync(false);
@@ -254,7 +254,7 @@ public class FirebaseAuthServiceTests
     public async Task ShouldBeParent_WhenSignedInAndUidExistsInParentsCollection(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.GetCurrentUserId()).ReturnsAsync(uid);
@@ -271,7 +271,7 @@ public class FirebaseAuthServiceTests
     public async Task ShouldNotBeParent_WhenSignedInAndUidNotInParentsCollection(
         FirebaseUid uid,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.GetCurrentUserId()).ReturnsAsync(uid);
@@ -287,7 +287,7 @@ public class FirebaseAuthServiceTests
     [Test, AutoMoqData]
     public async Task ShouldNotBeParent_WhenSignInFails(
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
-        FirebaseAuthService sut)
+        UserContext sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(new Exception("auth/popup-closed-by-user"));

@@ -1,6 +1,6 @@
 @using DunIt.Core.Auth
 @using DunIt.Web.Pages
-@inject IAuthService Auth
+@inject IUserContext Auth
 @implements IDisposable
 
 @if (Auth.IsAuthenticated)
@@ -21,11 +21,11 @@ else
 }
 
 @code {
-    protected override void OnInitialized() => Auth.AuthStateChanged += OnAuthStateChanged;
+    protected override void OnInitialized() => Auth.Changed += OnAuthStateChanged;
 
     protected override async Task OnInitializedAsync() => await Auth.RestoreSession();
 
-    public void Dispose() => Auth.AuthStateChanged -= OnAuthStateChanged;
+    public void Dispose() => Auth.Changed -= OnAuthStateChanged;
 
     private void OnAuthStateChanged() => InvokeAsync(StateHasChanged);
 }

@@ -17,7 +17,7 @@ var firebaseConfig = FirebaseConfig.From(builder.Configuration.GetSection("Fireb
 builder.Services.AddSingleton<IFirebaseAppSettings>(firebaseConfig);
 builder.Services.AddSingleton<IFirebaseEmulatorSettings>(firebaseConfig);
 builder.Services.AddSingleton<IFirebaseInterop, JsFirebaseInterop>();
-builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
+builder.Services.AddSingleton<IUserContext, UserContext>();
 builder.Services.AddSingleton<IChoreRepository, FirebaseChoreRepository>();
 builder.Services.AddSingleton<IChildRepository, FirebaseChildRepository>();
 builder.Services.AddTransient<DailyChoreViewModel>();

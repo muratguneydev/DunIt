@@ -1,10 +1,13 @@
 namespace DunIt.Core.Auth;
 
-public interface IAuthService
+using DunIt.Core.Models;
+
+public interface IUserContext
 {
     bool IsAuthenticated { get; }
     bool IsParent { get; }
-    event Action AuthStateChanged;
+    FirebaseUid CurrentUserId { get; }
+    event Action Changed;
     Task RestoreSession();
     Task<bool> SignIn();
     Task SignOut();

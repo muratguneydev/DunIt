@@ -42,7 +42,7 @@ public static class FirestoreEmulator
             ["firebaseUid"] = StringField(firebaseUid)
         });
 
-    private static Task AddChore(string id, string title, string assignedTo, string scheduleType) =>
+    public static Task AddChore(string id, string title, string assignedTo, string scheduleType) =>
         SetDocument("chores", id, new()
         {
             ["title"]        = StringField(title),

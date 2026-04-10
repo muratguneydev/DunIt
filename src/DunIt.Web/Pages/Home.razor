@@ -1,6 +1,6 @@
 @page "/"
 @inject DailyChoreViewModel ViewModel
-@inject IAuthService Auth
+@inject IUserContext Auth
 @implements IAsyncDisposable
 
 <PageTitle>DunIt</PageTitle>
@@ -15,16 +15,19 @@
     }
     else
     {
-        <div class="child-selector">
-            @foreach (var child in ViewModel.Children)
-            {
-                <button class="child-btn @(child == ViewModel.SelectedChild ? "active" : "")"
-                        @onclick="() => ViewModel.SelectChild(child)">
-                    <span class="avatar">@child.Avatar</span>
-                    <span class="name">@child.Name</span>
-                </button>
-            }
-        </div>
+        @if (!ViewModel.IsChildView)
+        {
+            <div class="child-selector">
+                @foreach (var child in ViewModel.Children)
+                {
+                    <button class="child-btn @(child == ViewModel.SelectedChild ? "active" : "")"
+                            @onclick="() => ViewModel.SelectChild(child)">
+                        <span class="avatar">@child.Avatar</span>
+                        <span class="name">@child.Name</span>
+                    </button>
+                }
+            </div>
+        }
 
         <div class="progress">
             @ViewModel.CompletedCount / @ViewModel.TotalCount done
@@ -66,7 +69,10 @@
     protected override async Task OnInitializedAsync()
     {
         ViewModel.StateChanged += OnStateChanged;
-        await ViewModel.Initialize();
+        if (Auth.IsParent)
+            await ViewModel.Initialize();
+        else
+            await ViewModel.InitializeAsChild(Auth.CurrentUserId);
     }
 
     private void OnStateChanged() => InvokeAsync(StateHasChanged);
