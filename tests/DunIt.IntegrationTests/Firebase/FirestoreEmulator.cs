@@ -42,6 +42,15 @@ public static class FirestoreEmulator
             ["firebaseUid"] = StringField(firebaseUid)
         });
 
+    public static Task AddCompletion(string id, string choreId, string childId, DateTimeOffset completedAt) =>
+        SetDocument("completions", id, new()
+        {
+            ["choreId"]       = StringField(choreId),
+            ["childId"]       = StringField(childId),
+            ["completedAt"]   = new { timestampValue = completedAt.UtcDateTime.ToString("O") },
+            ["completedDate"] = StringField(completedAt.ToString("yyyy-MM-dd"))
+        });
+
     public static Task AddChore(string id, string title, string assignedTo, string scheduleType) =>
         SetDocument("chores", id, new()
         {

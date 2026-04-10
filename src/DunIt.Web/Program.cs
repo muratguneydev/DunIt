@@ -21,6 +21,7 @@ builder.Services.AddSingleton<IUserContext, UserContext>();
 builder.Services.AddSingleton<IChoreRepository, FirebaseChoreRepository>();
 builder.Services.AddSingleton<IChildRepository, FirebaseChildRepository>();
 builder.Services.AddTransient<DailyChoreViewModel>();
+builder.Services.AddTransient<WeeklyReportViewModel>();
 builder.Services.AddTransient<AdminViewModel>();
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
 

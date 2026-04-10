@@ -1,0 +1,57 @@
+@page "/report"
+@inject WeeklyReportViewModel ViewModel
+@inject IUserContext Auth
+
+<PageTitle>DunIt — Weekly Report</PageTitle>
+
+<div class="app">
+    @if (!ViewModel.IsChildView)
+    {
+        <div class="child-selector">
+            @foreach (var child in ViewModel.Children)
+            {
+                <button class="child-btn @(child == ViewModel.SelectedChild ? "active" : "")"
+                        @onclick="() => ViewModel.SelectChild(child)">
+                    <span class="avatar">@child.Avatar</span>
+                    <span class="name">@child.Name</span>
+                </button>
+            }
+        </div>
+    }
+
+    @if (ViewModel.SelectedChild != Child.Empty)
+    {
+        <h2 class="report-title">@ViewModel.SelectedChild.Name's Week</h2>
+
+        <p class="report-summary">Total: @ViewModel.TotalCompleted / @ViewModel.TotalDue</p>
+
+        <ul class="report-days">
+            @foreach (var day in ViewModel.Days)
+            {
+                <li class="report-day">
+                    <span class="day-label">@day.Date.ToString("ddd dd MMM")</span>
+                    <span class="day-count">@day.CompletedCount / @day.TotalCount</span>
+                </li>
+            }
+        </ul>
+    }
+
+    <div class="nav-link-row">
+        <a href="/">← Back to chores</a>
+        @if (Auth.IsParent)
+        {
+            <a href="/admin">⚙ Manage chores</a>
+        }
+        <button class="sign-out-btn" @onclick="Auth.SignOut">Sign out</button>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        if (Auth.IsParent)
+            await ViewModel.Initialize();
+        else
+            await ViewModel.InitializeAsChild(Auth.CurrentUserId);
+    }
+}
