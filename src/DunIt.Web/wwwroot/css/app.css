@@ -303,6 +303,113 @@ html, body {
     background: #43a047;
 }
 
+/* ── Weekly report ────────────────────────────────────────── */
+
+.report-summary-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.summary-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    min-width: 36px;
+    flex-shrink: 0;
+}
+
+.summary-fraction {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    min-width: 40px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.summary-bar-track {
+    flex: 1;
+    height: 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.summary-bar-fill {
+    height: 100%;
+    background: #4caf50;
+    border-radius: 5px;
+    transition: width 0.4s ease;
+}
+
+.report-days {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.report-day {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.report-day:last-child {
+    border-bottom: none;
+}
+
+.report-day .day-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    min-width: 50px;
+    flex-shrink: 0;
+}
+
+.report-day.all-done .day-label { color: #2e7d32; }
+
+.day-bar-track {
+    flex: 1;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.day-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.report-day.all-done .day-bar-fill  { background: #4caf50; }
+.report-day.partial   .day-bar-fill  { background: #ff9800; }
+.report-day.none-done .day-bar-fill  { background: #e0e0e0; }
+
+.report-day .day-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: #bbb;
+    min-width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.report-day.all-done .day-count { color: #4caf50; }
+.report-day.partial   .day-count { color: #ff9800; }
+
 /* ── Login page ───────────────────────────────────────────── */
 
 .login-page {

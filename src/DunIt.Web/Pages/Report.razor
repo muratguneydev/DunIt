@@ -23,13 +23,33 @@
     {
         <h2 class="report-title">@ViewModel.SelectedChild.Name's Week</h2>
 
-        <p class="report-summary">Total: @ViewModel.TotalCompleted / @ViewModel.TotalDue</p>
+        <div class="report-summary-card">
+            <div class="summary-label">Total</div>
+            <div class="summary-bar-track">
+                @if (ViewModel.TotalDue > 0)
+                {
+                    <div class="summary-bar-fill" style="width: @(100 * ViewModel.TotalCompleted / ViewModel.TotalDue)%"></div>
+                }
+            </div>
+            <div class="summary-fraction">@ViewModel.TotalCompleted / @ViewModel.TotalDue</div>
+        </div>
 
         <ul class="report-days">
             @foreach (var day in ViewModel.Days)
             {
-                <li class="report-day">
-                    <span class="day-label">@day.Date.ToString("ddd dd MMM")</span>
+                var pct = day.TotalCount > 0 ? 100 * day.CompletedCount / day.TotalCount : 0;
+                var rowClass = day.TotalCount == 0 ? "no-chores"
+                             : day.CompletedCount == day.TotalCount ? "all-done"
+                             : day.CompletedCount > 0 ? "partial"
+                             : "none-done";
+                <li class="report-day @rowClass">
+                    <span class="day-label">@day.Date.ToString("ddd dd")</span>
+                    <div class="day-bar-track">
+                        @if (day.TotalCount > 0)
+                        {
+                            <div class="day-bar-fill" style="width: @pct%"></div>
+                        }
+                    </div>
                     <span class="day-count">@day.CompletedCount / @day.TotalCount</span>
                 </li>
             }
