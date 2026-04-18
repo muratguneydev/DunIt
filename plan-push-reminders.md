@@ -24,9 +24,9 @@ This plan covers implementing push reminders using Firebase Cloud Messaging in t
 
 | # | Status | Iteration | Red (test) | Green (code) |
 |---|--------|-----------|-----------|--------------|
-| 32.1 | ⬜ | Notification permission model | `ShouldRequestPermission_WhenAppLoads` / `ShouldHandlePermissionDenied_WhenUserDeclines` | `NotificationService.RequestPermission()` + permission state tracking |
-| 32.2 | ⬜ | FCM token management | `ShouldGetFcmToken_WhenPermissionGranted` / `ShouldHandleTokenError_WhenFcmFails` | `FcmService.GetToken()` + token storage in localStorage |
-| 32.3 | ⬜ | Reminder settings model | `ShouldHaveDefaultSettings_WhenNoSettingsSaved` / `ShouldSaveSettings_WhenUserUpdates` | `ReminderSettings` record with enabled/time + localStorage persistence |
+| 32.1 | ✅ | Notification permission model | `ShouldRequestPermission_WhenAppLoads` / `ShouldHandlePermissionDenied_WhenUserDeclines` | `NotificationService.RequestPermission()` + permission state tracking |
+| 32.2 | ✅ | FCM token management | `ShouldGetFcmToken_WhenPermissionGranted` / `ShouldHandleTokenError_WhenFcmFails` | `FcmService.GetToken()` + token storage in localStorage |
+| 32.3 | ✅ | Reminder settings model | `ShouldHaveDefaultSettings_WhenNoSettingsSaved` / `ShouldSaveSettings_WhenUserUpdates` | `ReminderSettings` record with enabled/time + localStorage persistence |
 | 32.4 | ⬜ | Daily reminder scheduling | `ShouldScheduleReminder_WhenEnabledAndTimeSet` / `ShouldCancelReminder_WhenDisabled` | `ReminderScheduler.ScheduleDaily()` using `setTimeout` |
 | 32.5 | ⬜ | Service worker push handler | `ShouldShowNotification_WhenPushReceived` / `ShouldOpenApp_WhenNotificationClicked` | Enhanced `service-worker.js` with `push` and `notificationclick` events |
 | 32.6 | ⬜ | FCM message sending | `ShouldSendTestMessage_WhenTokenValid` / `ShouldHandleSendError_WhenTokenInvalid` | `FcmService.SendTestMessage()` for development testing |
