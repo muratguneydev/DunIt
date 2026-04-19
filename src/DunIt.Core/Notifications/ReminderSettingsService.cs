@@ -18,7 +18,7 @@ public class ReminderSettingsService
         var json = await _storage.GetItemAsync(Key);
         if (json is null)
         {
-            return new ReminderSettings(false, new TimeOnly(9, 0));
+            return ReminderSettings.Default;
         }
         return JsonSerializer.Deserialize<ReminderSettings>(json)!;
     }

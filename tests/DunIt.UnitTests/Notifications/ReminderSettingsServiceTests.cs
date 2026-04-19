@@ -8,7 +8,6 @@ using Moq;
 using NUnit.Framework;
 using Shouldly;
 
-[TestFixture]
 public class ReminderSettingsServiceTests
 {
     [Test, AutoMoqData]
@@ -23,8 +22,7 @@ public class ReminderSettingsServiceTests
         var result = await sut.GetSettingsAsync();
 
         // Assert
-        result.Enabled.ShouldBe(false);
-        result.Time.ShouldBe(new TimeOnly(9, 0));
+        result.ShouldBe(ReminderSettings.Default);
     }
 
     [Test, AutoMoqData]
