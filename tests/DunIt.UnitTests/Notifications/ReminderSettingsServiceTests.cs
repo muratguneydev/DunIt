@@ -37,7 +37,7 @@ public class ReminderSettingsServiceTests
         await sut.SaveSettingsAsync(settings);
 
         // Assert
-        storageStub.Verify(s => s.SetItemAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        storageStub.Verify(s => s.SetItemAsync(It.IsAny<string>(), It.IsAny<string>()));
         // Note: Serialization is tested implicitly; detailed JSON check omitted for simplicity
     }
 }

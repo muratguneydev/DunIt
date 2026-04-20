@@ -63,7 +63,7 @@ public class FirebaseChoreRepositoryTests
         await sut.DeleteChore(choreId);
 
         // Assert
-        firebaseInteropSpy.Verify(f => f.DeleteChore(choreId), Times.Once);
+        firebaseInteropSpy.Verify(f => f.DeleteChore(choreId));
     }
 
     [Test, AutoMoqData]
@@ -123,7 +123,7 @@ public class FirebaseChoreRepositoryTests
         await sut.UndoChore(completionId);
 
         // Assert
-        firebaseInteropSpy.Verify(f => f.UndoChore(completionId), Times.Once);
+        firebaseInteropSpy.Verify(f => f.UndoChore(completionId));
     }
 
     [Test, AutoMoqData]

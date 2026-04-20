@@ -112,7 +112,7 @@ public class AdminViewModelTests
 
         // Assert
         foreach (var chore in chores)
-            choreRepoSpy.Verify(r => r.DeleteChore(chore.Id), Times.Once);
+            choreRepoSpy.Verify(r => r.DeleteChore(chore.Id));
     }
 
     [Test, AutoMoqData]

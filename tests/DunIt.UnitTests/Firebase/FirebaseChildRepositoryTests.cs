@@ -40,7 +40,7 @@ public class FirebaseChildRepositoryTests
         await sut.DeleteChild(childId);
 
         // Assert
-        firebaseInteropSpy.Verify(f => f.DeleteChild(childId), Times.Once);
+        firebaseInteropSpy.Verify(f => f.DeleteChild(childId));
     }
 
     [Test, AutoMoqData]

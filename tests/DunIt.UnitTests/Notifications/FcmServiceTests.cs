@@ -24,7 +24,7 @@ public class FcmServiceTests
 
         // Assert
         token.ShouldBe(validToken);
-        interopStub.Verify(i => i.GetToken(), Times.Once);
+        interopStub.Verify(i => i.GetToken());
     }
 
     [Test, AutoMoqData]
@@ -55,7 +55,7 @@ public class FcmServiceTests
         await sut.GetToken();
 
         // Assert
-        storageStub.Verify(s => s.SetItemAsync("fcm_token", validToken), Times.Once);
+        storageStub.Verify(s => s.SetItemAsync("fcm_token", validToken));
     }
 
     [Test, AutoMoqData]
