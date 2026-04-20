@@ -22,4 +22,10 @@ public class FcmService
     {
         return await _localStorage.GetItemAsync("fcm_token");
     }
+
+    public async Task SendTestMessage()
+    {
+        var token = await _localStorage.GetItemAsync("fcm_token");
+        await _fcmInterop.SendTestMessage(token!);
+    }
 }

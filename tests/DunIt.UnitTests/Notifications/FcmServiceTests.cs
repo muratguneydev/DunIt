@@ -90,4 +90,39 @@ public class FcmServiceTests
         // Assert
         token.ShouldBeNull();
     }
+
+    [Test, AutoMoqData]
+    public async Task ShouldSendTestMessage_WhenTokenValid(
+        string storedToken,
+        [Frozen] Mock<ILocalStorage> storageStub,
+        [Frozen] Mock<IFcmInterop> interopSpy,
+        FcmService sut)
+    {
+        // Arrange
+        storageStub.Setup(s => s.GetItemAsync("fcm_token"))
+                   .ReturnsAsync(storedToken);
+
+        // Act
+        await sut.SendTestMessage();
+
+        // Assert
+        interopSpy.Verify(i => i.SendTestMessage(storedToken));
+    }
+
+    [Test, AutoMoqData]
+    public async Task ShouldHandleSendError_WhenTokenInvalid(
+        string storedToken,
+        [Frozen] Mock<ILocalStorage> storageStub,
+        [Frozen] Mock<IFcmInterop> interopStub,
+        FcmService sut)
+    {
+        // Arrange
+        storageStub.Setup(s => s.GetItemAsync("fcm_token"))
+                   .ReturnsAsync(storedToken);
+        interopStub.Setup(i => i.SendTestMessage(storedToken))
+                   .ThrowsAsync(new Exception("FCM token invalid"));
+
+        // Act & Assert
+        await Should.ThrowAsync<Exception>(() => sut.SendTestMessage());
+    }
 }

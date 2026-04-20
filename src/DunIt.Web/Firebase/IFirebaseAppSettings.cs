@@ -8,4 +8,6 @@ public interface IFirebaseAppSettings
     string StorageBucket { get; }
     string MessagingSenderId { get; }
     string AppId { get; }
+    string VapidKey { get; }
+    string FcmServerKey { get; }
 }
