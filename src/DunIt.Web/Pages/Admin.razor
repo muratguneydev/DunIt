@@ -35,6 +35,7 @@
                 <li class="admin-item">
                     <span class="chore-title">@chore.Title</span>
                     <span class="schedule-label">@chore.Schedule.GetType().Name.Replace("Schedule", "")</span>
+                    <span class="due-by-label">by @chore.DueBy.ToString("h:mm tt")</span>
                     <button class="delete-btn" @onclick="() => ViewModel.DeleteChore(chore)">🗑</button>
                 </li>
             }
@@ -47,6 +48,7 @@
                 <option value="weekdays">Weekdays</option>
                 <option value="weekends">Weekends</option>
             </select>
+            <label>Due by: <input type="time" @bind="_newChoreDueBy" /></label>
             <button type="submit">Add chore</button>
         </form>
     }
@@ -61,6 +63,7 @@
     private string _newChildName = "";
     private string _newChoreTitle = "";
     private string _newChoreSchedule = "daily";
+    private TimeOnly _newChoreDueBy = new TimeOnly(23, 59);
 
     [Inject] private NavigationManager Nav { get; set; } = default!;
 
@@ -93,8 +96,9 @@
     private async Task AddChore(Child child)
     {
         if (string.IsNullOrWhiteSpace(_newChoreTitle)) return;
-        await ViewModel.AddChore(child, _newChoreTitle, ScheduleFrom(_newChoreSchedule));
+        await ViewModel.AddChore(child, _newChoreTitle, ScheduleFrom(_newChoreSchedule), _newChoreDueBy);
         _newChoreTitle = "";
+        _newChoreDueBy = new TimeOnly(23, 59);
     }
 
     private static ChoreSchedule ScheduleFrom(string key) => key switch

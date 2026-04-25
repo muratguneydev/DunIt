@@ -20,7 +20,7 @@ public class FirebaseChoreRepositoryTests
         // Arrange
         var chore = new Chore(choreId, title, assignedTo, new DailySchedule());
         firebaseInteropSpy.Setup(f => f.AddChore(It.IsAny<ChoreDto>()))
-            .ReturnsAsync(new ChoreDto(choreId, title, assignedTo, "daily"));
+            .ReturnsAsync(new ChoreDto(choreId, title, assignedTo, "daily", "23:59"));
 
         // Act
         var result = await sut.AddChore(chore);
@@ -42,7 +42,7 @@ public class FirebaseChoreRepositoryTests
         // Arrange
         var chore = new Chore(choreId, title, assignedTo, new WeekdaysSchedule());
         firebaseInteropSpy.Setup(f => f.AddChore(It.IsAny<ChoreDto>()))
-            .ReturnsAsync(new ChoreDto(choreId, title, assignedTo, "weekdays"));
+            .ReturnsAsync(new ChoreDto(choreId, title, assignedTo, "weekdays", "23:59"));
 
         // Act
         await sut.AddChore(chore);
@@ -75,8 +75,8 @@ public class FirebaseChoreRepositoryTests
         // Arrange
         firebaseInteropStub.Setup(f => f.GetChoresForChild(childId)).ReturnsAsync(
         [
-            new ChoreDto("c1", "Make bed", childId, "daily"),
-            new ChoreDto("c2", "Brush teeth", childId, "weekdays")
+            new ChoreDto("c1", "Make bed", childId, "daily", "23:59"),
+            new ChoreDto("c2", "Brush teeth", childId, "weekdays", "08:00")
         ]);
 
         // Act
@@ -124,6 +124,46 @@ public class FirebaseChoreRepositoryTests
 
         // Assert
         firebaseInteropSpy.Verify(f => f.UndoChore(completionId));
+    }
+
+    [Test, AutoMoqData]
+    public async Task ShouldSerializeDueBy_WhenAddingChore(
+        ChoreId choreId, string title, ChildId assignedTo,
+        [Frozen] Mock<IFirebaseInterop> firebaseInteropSpy,
+        FirebaseChoreRepository sut)
+    {
+        // Arrange
+        var dueBy = new TimeOnly(20, 0);
+        var chore = new Chore(choreId, title, assignedTo, new DailySchedule()) { DueBy = dueBy };
+        firebaseInteropSpy.Setup(f => f.AddChore(It.IsAny<ChoreDto>()))
+            .ReturnsAsync(new ChoreDto(choreId, title, assignedTo, "daily", "20:00"));
+
+        // Act
+        await sut.AddChore(chore);
+
+        // Assert
+        firebaseInteropSpy.Verify(f => f.AddChore(
+            It.Is<ChoreDto>(d => d.DueBy == "20:00")),
+            Times.Once);
+    }
+
+    [Test, AutoMoqData]
+    public async Task ShouldDeserializeDueBy_WhenGettingChores(
+        ChildId childId,
+        [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
+        FirebaseChoreRepository sut)
+    {
+        // Arrange
+        firebaseInteropStub.Setup(f => f.GetChoresForChild(childId)).ReturnsAsync(
+        [
+            new ChoreDto("c1", "Make bed", childId, "daily", "08:30")
+        ]);
+
+        // Act
+        var result = await sut.GetChoresForChild(childId);
+
+        // Assert
+        result[0].DueBy.ShouldBe(new TimeOnly(8, 30));
     }
 
     [Test, AutoMoqData]

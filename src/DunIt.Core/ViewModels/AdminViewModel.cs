@@ -53,9 +53,13 @@ public class AdminViewModel : IAsyncDisposable
         await Refresh();
     }
 
-    public async Task AddChore(Child child, string title, ChoreSchedule schedule)
+    public async Task AddChore(Child child, string title, ChoreSchedule schedule, TimeOnly dueBy)
     {
-        await _choreRepository.AddChore(new Chore(new ChoreId(Guid.NewGuid().ToString()), title, child.Id, schedule));
+        var chore = new Chore(new ChoreId(Guid.NewGuid().ToString()), title, child.Id, schedule)
+        {
+            DueBy = dueBy
+        };
+        await _choreRepository.AddChore(chore);
         await RefreshChoresFor(child);
     }
 

@@ -28,4 +28,14 @@ public class ChoreTests
         // Act / Assert
         chore.IsScheduledFor(weekday).ShouldBeFalse();
     }
+
+    [Test, AutoData]
+    public void ShouldDefaultDueByToEndOfDay_WhenNoTimeSpecified(ChoreId id, string title, ChildId assignedTo)
+    {
+        // Arrange / Act
+        var chore = new Chore(id, title, assignedTo, new DailySchedule());
+
+        // Assert
+        chore.DueBy.ShouldBe(new TimeOnly(23, 59));
+    }
 }

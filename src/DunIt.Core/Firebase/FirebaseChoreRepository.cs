@@ -8,7 +8,7 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
 {
     public async Task<Chore> AddChore(Chore chore)
     {
-        var dto = new ChoreDto(chore.Id, chore.Title, chore.AssignedTo, ToScheduleType(chore.Schedule));
+        var dto = new ChoreDto(chore.Id, chore.Title, chore.AssignedTo, ToScheduleType(chore.Schedule), chore.DueBy.ToString("HH:mm"));
         var saved = await interop.AddChore(dto);
         return ToChore(saved);
     }
@@ -42,7 +42,10 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
     }
 
     private static Chore ToChore(ChoreDto dto) =>
-        new(new ChoreId(dto.Id), dto.Title, new ChildId(dto.AssignedTo), ToSchedule(dto.ScheduleType));
+        new(new ChoreId(dto.Id), dto.Title, new ChildId(dto.AssignedTo), ToSchedule(dto.ScheduleType))
+        {
+            DueBy = TimeOnly.ParseExact(dto.DueBy, "HH:mm")
+        };
 
     private static ChoreCompletion ToCompletion(ChoreCompletionDto dto) =>
         new(new ChoreCompletionId(dto.Id), new ChoreId(dto.ChoreId), new ChildId(dto.ChildId),
