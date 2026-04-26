@@ -72,10 +72,20 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 | # | Status | Iteration | Description |
 |---|--------|-----------|-------------|
 | 31 | ⬜ | **Offline support** | Service worker caching for offline use |
-| 32 | ⬜ | **Push reminders** | Firebase Cloud Messaging for daily nudges |
+| 32 | ✅ | **Push reminders** | Firebase Cloud Messaging for daily nudges; permission service, FCM token management, reminder settings with localStorage, notification sending |
 | 33 | ✅ | **Deploy to Firebase Hosting** | `firebase deploy` |
+| 34 | ✅ | **Sign-out & empty-state** | Sign-out button; empty-state admin link |
 
-## Phase 9: Role-based Access
+## Phase 9: Role-based Access & Auth
 | # | Status | Iteration | Description |
 |---|--------|-----------|-------------|
 | 35 | ✅ | **Parent vs child roles** | Explicit `parents` Firestore collection; guard admin page — defaults to child if UID not found |
+| 36 | ✅ | **Google authentication** | Replace email/password login with Google OAuth |
+| 37 | ✅ | **Child-scoped view** | Child sees only their own chores; refactor `IUserContext` and `NullChild` |
+
+## Phase 10: Reporting & Chore Features
+| # | Status | Iteration | Description |
+|---|--------|-----------|-------------|
+| 38 | ✅ | **Weekly report** | Per-child weekly report page |
+| 39 | ✅ | **Weekly report UI** | Progress bars and colour coding |
+| 40 | ✅ | **Chore deadlines** | `DueBy` time field on chores |
