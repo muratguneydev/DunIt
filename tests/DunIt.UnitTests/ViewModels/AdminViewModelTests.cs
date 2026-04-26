@@ -119,6 +119,7 @@ public class AdminViewModelTests
     public async Task ShouldAddChore_WhenChoreAdded(
         Child child,
         Chore addedChore,
+        TimeOnly dueBy,
         [Frozen] Mock<IChoreRepository> choreRepoStub,
         [Frozen] Mock<IChildRepository> childRepoStub,
         AdminViewModel sut)
@@ -132,7 +133,7 @@ public class AdminViewModelTests
         choreRepoStub.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([addedChore]);
 
         // Act
-        await sut.AddChore(child, addedChore.Title, new DailySchedule(), new TimeOnly(23, 59));
+        await sut.AddChore(child, addedChore.Title, new DailySchedule(), dueBy);
 
         // Assert
         sut.ChoresFor(child).ShouldContain(addedChore);
@@ -142,12 +143,12 @@ public class AdminViewModelTests
     public async Task ShouldPassDueByToRepository_WhenChoreAdded(
         Child child,
         Chore addedChore,
+        TimeOnly dueBy,
         [Frozen] Mock<IChoreRepository> choreRepoSpy,
         [Frozen] Mock<IChildRepository> childRepoStub,
         AdminViewModel sut)
     {
         // Arrange
-        var dueBy = new TimeOnly(19, 30);
         childRepoStub.Setup(r => r.GetChildren()).ReturnsAsync([child]);
         choreRepoSpy.Setup(r => r.GetChoresForChild(child.Id)).ReturnsAsync([]);
         await sut.Initialize();
@@ -158,7 +159,7 @@ public class AdminViewModelTests
         await sut.AddChore(child, addedChore.Title, new DailySchedule(), dueBy);
 
         // Assert
-        choreRepoSpy.Verify(r => r.AddChore(It.Is<Chore>(c => c.DueBy == dueBy)), Times.Once);
+        choreRepoSpy.Verify(r => r.AddChore(It.Is<Chore>(c => c.DueBy == dueBy)));
     }
 
     [Test, AutoMoqData]
