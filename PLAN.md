@@ -95,3 +95,15 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 |---|--------|-----------|-------------|
 | 41 | ⬜ | **Structured logging** | Inject `ILogger<T>` into repositories and JS interop layer; log warnings for degraded-but-recoverable cases and errors for failures at the JS→.NET, DTO→domain, and auth boundaries |
 | 42 | ⬜ | **Sentry integration** | Add Sentry SDK for production error tracking; unhandled exceptions surface automatically with stack traces and breadcrumbs |
+
+## Phase 12: Enable Notifications
+The client-side reminder scheduler (iteration 32) only fires when the app is open. This phase wires up real cross-device push delivery: tokens stored in Firestore, a Firebase Cloud Function that sends FCM messages on schedule, and a parent-triggered nudge button. Children need to install the PWA and grant permission once; after that notifications arrive even when the app is closed.
+
+| # | Status | Iteration | Red (test) | Green (code) |
+|---|--------|-----------|-----------|--------------|
+| 43 | ⬜ | **FCM token registration in Firestore** | `ShouldSaveToken_WhenPermissionGranted` / `ShouldOverwriteToken_WhenTokenRefreshed` | On permission grant, write FCM token to `users/{uid}/fcmTokens` in Firestore; handle token refresh via FCM `onTokenRefresh` |
+| 44 | ⬜ | **Reminder settings in Firestore** | `ShouldPersistReminderSettings_WhenSaved` / `ShouldLoadReminderSettings_WhenUserSignsIn` | Move reminder settings from localStorage to `users/{uid}/reminderSettings` so the Cloud Function can read them |
+| 45 | ⬜ | **Child notification opt-in flow** | `ShouldPromptPermission_WhenChildFirstOpensApp` / `ShouldNotPromptAgain_WhenPermissionAlreadyDecided` | Child-facing permission prompt on first launch; persist decision; skip if already granted/denied |
+| 46 | ⬜ | **Firebase Cloud Function: daily reminder** | Unit-test send logic with FCM Admin SDK mock | Scheduled Cloud Function (runs every 15 min); reads all `reminderSettings` docs where enabled=true and localTime matches; sends FCM message to each registered token |
+| 47 | ⬜ | **Parent nudge button** | `ShouldSendNudge_WhenParentTapsButton` / `ShouldShowError_WhenChildHasNoToken` | Per-child "Nudge" button on the admin page; calls a Firebase Callable Function that sends an immediate FCM message to that child's registered devices |
+| 48 | ⬜ | **E2E: notification delivery** | Playwright test: grant permission in emulator browser, trigger nudge as parent, verify notification appears | Full flow E2E using the Firebase emulator stack |
