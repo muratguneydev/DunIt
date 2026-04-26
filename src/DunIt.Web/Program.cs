@@ -1,9 +1,11 @@
 using DunIt.Core.Auth;
 using DunIt.Core.Firebase;
+using DunIt.Core.Notifications;
 using DunIt.Core.Repositories;
 using DunIt.Core.ViewModels;
 using DunIt.Web;
 using DunIt.Web.Firebase; // JsFirebaseInterop, FirebaseConfig
+using DunIt.Web.Notifications;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,9 +22,15 @@ builder.Services.AddSingleton<IFirebaseInterop, JsFirebaseInterop>();
 builder.Services.AddSingleton<IUserContext, UserContext>();
 builder.Services.AddSingleton<IChoreRepository, FirebaseChoreRepository>();
 builder.Services.AddSingleton<IChildRepository, FirebaseChildRepository>();
+builder.Services.AddSingleton<ILocalStorage, JsLocalStorage>();
+builder.Services.AddSingleton<IClock, SystemClock>();
+builder.Services.AddSingleton<ReminderTimer>();
+builder.Services.AddSingleton<ReminderSettingsService>();
+builder.Services.AddSingleton<ReminderScheduler>();
 builder.Services.AddTransient<DailyChoreViewModel>();
 builder.Services.AddTransient<WeeklyReportViewModel>();
 builder.Services.AddTransient<AdminViewModel>();
+builder.Services.AddTransient<ReminderSettingsViewModel>();
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
 await builder.Build().RunAsync();

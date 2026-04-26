@@ -1,0 +1,12 @@
+services:
+  emulator:
+    ports:
+      - "8080:8080"
+      - "9099:9099"
+
+  web:
+    volumes:
+      - ./src/DunIt.Web/wwwroot/appsettings.playwright.json:/usr/share/nginx/html/appsettings.json:ro
+    depends_on:
+      emulator:
+        condition: service_healthy

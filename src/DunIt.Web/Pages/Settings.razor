@@ -1,0 +1,48 @@
+@page "/settings"
+@inject ReminderSettingsViewModel ViewModel
+
+<PageTitle>DunIt — Settings</PageTitle>
+
+<div class="app">
+    <h2>Reminder Settings</h2>
+
+    <div class="settings-form">
+        <label class="settings-toggle">
+            <input type="checkbox" @bind="ViewModel.Enabled" />
+            Enable daily reminders
+        </label>
+
+        <label class="settings-time @(ViewModel.Enabled ? "" : "disabled")">
+            Reminder time:
+            <input type="time" @bind="ViewModel.Time" disabled="@(!ViewModel.Enabled)" />
+        </label>
+
+        <button class="save-btn" @onclick="Save">Save</button>
+
+        @if (ViewModel.IsSaved)
+        {
+            <p class="saved-confirmation">Settings saved.</p>
+        }
+    </div>
+
+    <div class="nav-link-row">
+        <a href="/">← Back to chores</a>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.StateChanged += OnStateChanged;
+        await ViewModel.LoadAsync();
+    }
+
+    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+
+    private async Task Save() => await ViewModel.SaveAsync();
+
+    public void Dispose()
+    {
+        ViewModel.StateChanged -= OnStateChanged;
+    }
+}

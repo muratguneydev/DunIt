@@ -13,7 +13,7 @@ public class ReminderScheduler
         _clock = clock;
     }
 
-    public async Task ScheduleDaily(ReminderSettings settings)
+    public virtual async Task ScheduleDaily(ReminderSettings settings)
     {
         if (!settings.Enabled)
         {
