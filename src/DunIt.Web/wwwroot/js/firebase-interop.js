@@ -104,7 +104,8 @@ window.firebase_interop = {
         await setDoc(doc(db, "chores", chore.id), {
             title: chore.title,
             assignedTo: chore.assignedTo,
-            scheduleType: chore.scheduleType
+            scheduleType: chore.scheduleType,
+            dueBy: chore.dueBy
         });
         return chore;
     },

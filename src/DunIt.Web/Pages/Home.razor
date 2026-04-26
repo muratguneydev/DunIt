@@ -36,9 +36,10 @@
         <ul class="chore-list">
             @foreach (var chore in ViewModel.UncompletedChores)
             {
-                <li class="chore-item" @onclick="() => ViewModel.Complete(chore)">
+                <li class="chore-item @(IsOverdue(chore) ? "overdue" : "")" @onclick="() => ViewModel.Complete(chore)">
                     <span class="chore-check">⬜</span>
                     <span class="chore-title">@chore.Title</span>
+                    <span class="due-by">by @chore.DueBy.ToString("h:mm tt")</span>
                 </li>
             }
             @foreach (var completed in ViewModel.CompletedChores)
@@ -77,6 +78,8 @@
     }
 
     private void OnStateChanged() => InvokeAsync(StateHasChanged);
+
+    private static bool IsOverdue(Chore chore) => TimeOnly.FromDateTime(DateTime.Now) > chore.DueBy;
 
     public ValueTask DisposeAsync()
     {
