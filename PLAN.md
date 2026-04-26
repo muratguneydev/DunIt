@@ -89,3 +89,9 @@ Each iteration follows **Red → Green → Review → Refactor → Commit**.
 | 38 | ✅ | **Weekly report** | Per-child weekly report page |
 | 39 | ✅ | **Weekly report UI** | Progress bars and colour coding |
 | 40 | ✅ | **Chore deadlines** | `DueBy` time field on chores |
+
+## Phase 11: Observability
+| # | Status | Iteration | Description |
+|---|--------|-----------|-------------|
+| 41 | ⬜ | **Structured logging** | Inject `ILogger<T>` into repositories and JS interop layer; log warnings for degraded-but-recoverable cases and errors for failures at the JS→.NET, DTO→domain, and auth boundaries |
+| 42 | ⬜ | **Sentry integration** | Add Sentry SDK for production error tracking; unhandled exceptions surface automatically with stack traces and breadcrumbs |
