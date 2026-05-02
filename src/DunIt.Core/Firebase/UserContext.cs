@@ -2,8 +2,9 @@ namespace DunIt.Core.Firebase;
 
 using DunIt.Core.Auth;
 using DunIt.Core.Models;
+using Microsoft.Extensions.Logging;
 
-public sealed class UserContext(IFirebaseInterop interop) : IUserContext
+public sealed class UserContext(IFirebaseInterop interop, ILogger<UserContext> logger) : IUserContext
 {
     public bool IsAuthenticated { get; private set; }
     public bool IsParent { get; private set; }
@@ -32,8 +33,9 @@ public sealed class UserContext(IFirebaseInterop interop) : IUserContext
             Changed();
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Failed to sign in user");
             IsAuthenticated = false;
             IsParent = false;
             CurrentUserId = default;

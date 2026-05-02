@@ -4,6 +4,7 @@ using AutoFixture.NUnit4;
 using DunIt.Core.Firebase;
 using DunIt.Core.Models;
 using DunIt.Testing;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using Shouldly;
@@ -129,6 +130,29 @@ public class UserContextTests
 
         // Assert
         result.ShouldBeFalse();
+    }
+
+    [Test, AutoMoqData]
+    public async Task ShouldLogError_WhenSignInFails(
+        [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
+        [Frozen] Mock<ILogger<UserContext>> loggerMock,
+        UserContext sut)
+    {
+        // Arrange
+        var exception = new Exception("auth/popup-closed-by-user");
+        firebaseInteropStub.Setup(f => f.SignIn()).ThrowsAsync(exception);
+
+        // Act
+        await sut.SignIn();
+
+        // Assert
+        loggerMock.Verify(l => l.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Failed to sign in user")),
+            exception,
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+            Times.Once);
     }
 
     [Test, AutoMoqData]

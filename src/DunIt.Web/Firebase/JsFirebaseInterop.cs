@@ -2,12 +2,14 @@ namespace DunIt.Web.Firebase;
 
 using DunIt.Core.Firebase;
 using DunIt.Core.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 public sealed class JsFirebaseInterop(
     IJSRuntime js,
     IFirebaseAppSettings appSettings,
-    IFirebaseEmulatorSettings emulatorSettings) : IFirebaseInterop, IAsyncDisposable
+    IFirebaseEmulatorSettings emulatorSettings,
+    ILogger<JsFirebaseInterop> logger) : IFirebaseInterop, IAsyncDisposable
 {
     private bool _initialized;
     private readonly Dictionary<string, IDisposable> _refs = new();
@@ -35,7 +37,15 @@ public sealed class JsFirebaseInterop(
     public async Task<ChildDto[]> GetChildren()
     {
         await EnsureInitialized();
-        return await js.InvokeAsync<ChildDto[]>("firebase_interop.getChildren");
+        try
+        {
+            return await js.InvokeAsync<ChildDto[]>("firebase_interop.getChildren");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get children from JS interop");
+            throw;
+        }
     }
 
     public async Task<ChildDto> AddChild(ChildDto child)
@@ -95,7 +105,15 @@ public sealed class JsFirebaseInterop(
     public async Task SignIn()
     {
         await EnsureInitialized();
-        await js.InvokeVoidAsync("firebase_interop.signIn");
+        try
+        {
+            await js.InvokeVoidAsync("firebase_interop.signIn");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to sign in via JS interop");
+            throw;
+        }
     }
 
     public async Task SignOut()
@@ -113,13 +131,29 @@ public sealed class JsFirebaseInterop(
     public async Task<FirebaseUid> GetCurrentUserId()
     {
         await EnsureInitialized();
-        return new FirebaseUid(await js.InvokeAsync<string?>("firebase_interop.getCurrentUserId") ?? "");
+        try
+        {
+            return new FirebaseUid(await js.InvokeAsync<string?>("firebase_interop.getCurrentUserId") ?? "");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get current user ID from JS interop");
+            throw;
+        }
     }
 
     public async Task<bool> IsParent(FirebaseUid uid)
     {
         await EnsureInitialized();
-        return await js.InvokeAsync<bool>("firebase_interop.isParent", uid.Value);
+        try
+        {
+            return await js.InvokeAsync<bool>("firebase_interop.isParent", uid.Value);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to check if user is parent from JS interop for UID {Uid}", uid);
+            throw;
+        }
     }
 
     // ── Real-time subscriptions ──────────────────────────────────────────────

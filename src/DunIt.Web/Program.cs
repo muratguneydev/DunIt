@@ -9,6 +9,7 @@ using DunIt.Web.Notifications;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Logging;
+using Sentry;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -32,5 +33,11 @@ builder.Services.AddTransient<WeeklyReportViewModel>();
 builder.Services.AddTransient<AdminViewModel>();
 builder.Services.AddTransient<ReminderSettingsViewModel>();
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
+
+builder.UseSentry(options =>
+{
+    options.Dsn = "https://c5433c7540fcca8d8477b31f51a41c71@o4511320192909312.ingest.de.sentry.io/4511320204312656";
+    options.Environment = builder.HostEnvironment.Environment;
+});
 
 await builder.Build().RunAsync();

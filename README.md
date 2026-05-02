@@ -4,6 +4,17 @@ A family chore tracker for kids. Parents assign daily chores to each child. Chil
 
 Built with Blazor WebAssembly (PWA) + Firebase. Runs on iPhone and Android with no App Store required.
 
+## Progressive Web App (PWA)
+
+DunIt is shipped as a Progressive Web App, which means it can be installed from the browser and behave like a native app. The app already includes:
+
+- a service worker for offline support and asset caching
+- installability to the home screen on supported browsers
+- push notification support for reminders and nudges
+- app-like full-screen launch without browser chrome
+
+Users can still open DunIt in a normal browser tab, but installing it as a PWA gives a better phone experience and enables notification delivery even when the app is not actively open in the browser.
+
 ## Requirements
 
 - [Docker](https://www.docker.com/products/docker-desktop)

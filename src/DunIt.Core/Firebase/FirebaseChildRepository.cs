@@ -2,8 +2,9 @@ namespace DunIt.Core.Firebase;
 
 using DunIt.Core.Models;
 using DunIt.Core.Repositories;
+using Microsoft.Extensions.Logging;
 
-public class FirebaseChildRepository(IFirebaseInterop interop) : IChildRepository
+public class FirebaseChildRepository(IFirebaseInterop interop, ILogger<FirebaseChildRepository> logger) : IChildRepository
 {
     public async Task<Child> AddChild(Child child)
     {
@@ -16,8 +17,16 @@ public class FirebaseChildRepository(IFirebaseInterop interop) : IChildRepositor
 
     public async Task<IReadOnlyList<Child>> GetChildren()
     {
-        var dtos = await interop.GetChildren();
-        return dtos.Select(d => new Child(new ChildId(d.Id), d.Name, d.Avatar, new FirebaseUid(d.FirebaseUid))).ToList();
+        try
+        {
+            var dtos = await interop.GetChildren();
+            return dtos.Select(d => new Child(new ChildId(d.Id), d.Name, d.Avatar, new FirebaseUid(d.FirebaseUid))).ToList();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get children from Firebase");
+            throw;
+        }
     }
 
     public async Task<ISubscription> Subscribe(Action<IReadOnlyList<Child>> onUpdate)

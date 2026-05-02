@@ -5,6 +5,7 @@ using DunIt.Core.Firebase;
 using DunIt.Core.Models;
 using DunIt.Core.Schedules;
 using DunIt.Testing;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using Shouldly;
@@ -67,27 +68,27 @@ public class FirebaseChoreRepositoryTests
     }
 
     [Test, AutoMoqData]
-    public async Task ShouldReturnChores_WhenChildHasChores(
+    public async Task ShouldLogError_WhenChoreDtoHasInvalidDueBy(
         ChildId childId,
         [Frozen] Mock<IFirebaseInterop> firebaseInteropStub,
+        [Frozen] Mock<ILogger<FirebaseChoreRepository>> loggerMock,
         FirebaseChoreRepository sut)
     {
         // Arrange
         firebaseInteropStub.Setup(f => f.GetChoresForChild(childId)).ReturnsAsync(
         [
-            new ChoreDto("c1", "Make bed", childId, "daily", "23:59"),
-            new ChoreDto("c2", "Brush teeth", childId, "weekdays", "08:00")
+            new ChoreDto("c1", "Make bed", childId, "daily", "invalid")
         ]);
 
-        // Act
-        var result = await sut.GetChoresForChild(childId);
-
-        // Assert
-        result.Count.ShouldBe(2);
-        result[0].Id.Value.ShouldBe("c1");
-        result[0].Schedule.ShouldBeOfType<DailySchedule>();
-        result[1].Id.Value.ShouldBe("c2");
-        result[1].Schedule.ShouldBeOfType<WeekdaysSchedule>();
+        // Act & Assert
+        await Should.ThrowAsync<Exception>(() => sut.GetChoresForChild(childId));
+        loggerMock.Verify(l => l.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Failed to convert ChoreDto to Chore")),
+            It.IsAny<Exception>(),
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+            Times.Once);
     }
 
     [Test, AutoMoqData]

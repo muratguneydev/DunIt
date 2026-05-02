@@ -3,8 +3,9 @@ namespace DunIt.Core.Firebase;
 using DunIt.Core.Models;
 using DunIt.Core.Repositories;
 using DunIt.Core.Schedules;
+using Microsoft.Extensions.Logging;
 
-public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepository
+public class FirebaseChoreRepository(IFirebaseInterop interop, ILogger<FirebaseChoreRepository> logger) : IChoreRepository
 {
     public async Task<Chore> AddChore(Chore chore)
     {
@@ -41,15 +42,38 @@ public class FirebaseChoreRepository(IFirebaseInterop interop) : IChoreRepositor
         return dtos.Select(ToCompletion).ToList();
     }
 
-    private static Chore ToChore(ChoreDto dto) =>
-        new(new ChoreId(dto.Id), dto.Title, new ChildId(dto.AssignedTo), ToSchedule(dto.ScheduleType))
+    private Chore ToChore(ChoreDto dto)
+    {
+        try
         {
-            DueBy = TimeOnly.ParseExact(dto.DueBy, "HH:mm")
-        };
+            return new Chore(new ChoreId(dto.Id), dto.Title, new ChildId(dto.AssignedTo), ToSchedule(dto.ScheduleType))
+            {
+                DueBy = TimeOnly.ParseExact(dto.DueBy, "HH:mm")
+            };
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to convert ChoreDto to Chore: {Dto}", dto);
+            throw;
+        }
+    }
 
-    private static ChoreCompletion ToCompletion(ChoreCompletionDto dto) =>
-        new(new ChoreCompletionId(dto.Id), new ChoreId(dto.ChoreId), new ChildId(dto.ChildId),
-            DateTimeOffset.Parse(dto.CompletedAt, null, System.Globalization.DateTimeStyles.RoundtripKind));
+    private ChoreCompletion ToCompletion(ChoreCompletionDto dto)
+    {
+        try
+        {
+            return new ChoreCompletion(
+                new ChoreCompletionId(dto.Id),
+                new ChoreId(dto.ChoreId),
+                new ChildId(dto.ChildId),
+                DateTimeOffset.Parse(dto.CompletedAt, null, System.Globalization.DateTimeStyles.RoundtripKind));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to convert ChoreCompletionDto to ChoreCompletion: {Dto}", dto);
+            throw;
+        }
+    }
 
     private static ChoreSchedule ToSchedule(string scheduleType) => scheduleType switch
     {
